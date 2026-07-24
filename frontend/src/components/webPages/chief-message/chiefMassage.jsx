@@ -42,22 +42,19 @@ const ChiefMassage = () => {
       <div className="container">
         <div className="section-title">
           <span className="subtitle">Testimonials</span>
-          <h2>What Our Customers Say</h2>
-          <p>Don't just take our word for it - hear from our happy customers</p>
+          <h2>What People Say</h2>
+          <p>Real reviews from customers who keep coming back for more</p>
         </div>
 
         <div className="testimonials-grid">
           {testimonials.map((testimonial) => (
             <div key={testimonial.id} className="testimonial-card">
-              <div className="testimonial-quote">
-                <i className="fas fa-quote-left"></i>
-              </div>
               <div className="testimonial-stars">
                 {[...Array(testimonial.rating)].map((_, i) => (
                   <i key={i} className="fas fa-star"></i>
                 ))}
               </div>
-              <p className="testimonial-text">"{testimonial.text}"</p>
+              <p className="testimonial-text">{testimonial.text}</p>
               <div className="testimonial-author">
                 <div className="testimonial-avatar">
                   <span>{testimonial.initials}</span>
