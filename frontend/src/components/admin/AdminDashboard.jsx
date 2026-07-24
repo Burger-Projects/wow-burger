@@ -45,6 +45,8 @@ const AdminDashboard = () => {
     role: "customer",
   });
 
+  const [reviews, setReviews] = useState([]);
+
   const loadMenu = async () => {
     const [menuRes, catRes] = await Promise.all([
       api.get("/api/menu/menu-items"),
@@ -59,6 +61,11 @@ const AdminDashboard = () => {
     setUsers(res.data.data || []);
   };
 
+  const loadReviews = async () => {
+    const res = await api.get("/api/reviews/admin");
+    setReviews(res.data.data || []);
+  };
+
   useEffect(() => {
     if (!isAdmin) return;
     loadMenu().catch((e) =>
@@ -67,10 +74,14 @@ const AdminDashboard = () => {
   }, [isAdmin]);
 
   useEffect(() => {
-    if (!isAdmin || (tab !== "users" && tab !== "categories")) return;
+    if (!isAdmin || (tab !== "users" && tab !== "categories" && tab !== "reviews")) return;
     if (tab === "users") {
       loadUsers().catch((e) =>
         toast.error(e.response?.data?.message || "Failed to load users"),
+      );
+    } else if (tab === "reviews") {
+      loadReviews().catch((e) =>
+        toast.error(e.response?.data?.message || "Failed to load reviews"),
       );
     }
   }, [isAdmin, tab]);
@@ -282,6 +293,31 @@ const AdminDashboard = () => {
     }
   };
 
+  // ─── Review Handlers ────────────────────────────────────────────────────────
+
+  const toggleReviewApproval = async (id) => {
+    try {
+      const res = await api.patch(`/api/reviews/${id}/toggle`);
+      toast.success(res.data?.message || "Status updated");
+      window.dispatchEvent(new Event("reviews-updated"));
+      await loadReviews();
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Failed to toggle status");
+    }
+  };
+
+  const deleteReview = async (id) => {
+    if (!window.confirm("Delete this review?")) return;
+    try {
+      await api.delete(`/api/reviews/${id}`);
+      toast.success("Review deleted");
+      window.dispatchEvent(new Event("reviews-updated"));
+      await loadReviews();
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Delete failed");
+    }
+  };
+
   if (isLoading) return <LoadingSpinner />;
   if (!user) return <Navigate to="/login" replace />;
   if (!isAdmin) return <Navigate to="/" replace />;
@@ -319,6 +355,13 @@ const AdminDashboard = () => {
           onClick={() => setTab("categories")}
         >
           Categories
+        </button>
+        <button
+          type="button"
+          className={tab === "reviews" ? "active" : ""}
+          onClick={() => setTab("reviews")}
+        >
+          Reviews ({reviews.length})
         </button>
         <button
           type="button"
@@ -654,6 +697,80 @@ const AdminDashboard = () => {
                       </td>
                     </tr>
                   ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ─── Reviews Tab ──────────────────────────────────────────────────────── */}
+      {tab === "reviews" && (
+        <div className="admin-grid single-col">
+          <div className="admin-card admin-list">
+            <h2>Customer Reviews & Moderation ({reviews.length})</h2>
+            <div className="admin-table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Customer</th>
+                    <th>Rating</th>
+                    <th>Feedback Comment</th>
+                    <th>Date</th>
+                    <th>Display on Site</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {reviews.length === 0 ? (
+                    <tr>
+                      <td colSpan="6" style={{ textAlign: "center", padding: "20px" }}>
+                        No reviews submitted yet.
+                      </td>
+                    </tr>
+                  ) : (
+                    reviews.map((rev) => (
+                      <tr key={rev.id}>
+                        <td>
+                          <strong>{rev.customer_name}</strong>
+                          {rev.email && <div style={{ fontSize: "0.82rem", color: "#666" }}>{rev.email}</div>}
+                        </td>
+                        <td>
+                          <span style={{ color: "#f5b301", fontWeight: "bold", fontSize: "1.1rem" }}>
+                            {"★".repeat(rev.rating)}{"☆".repeat(5 - rev.rating)}
+                          </span>
+                        </td>
+                        <td style={{ maxWidth: "320px", wordBreak: "break-word" }}>
+                          {rev.comment}
+                        </td>
+                        <td>
+                          {rev.created_at ? new Date(rev.created_at).toLocaleDateString() : "—"}
+                        </td>
+                        <td>
+                          <label className="toggle-switch">
+                            <input
+                              type="checkbox"
+                              checked={Boolean(rev.is_approved)}
+                              onChange={() => toggleReviewApproval(rev.id)}
+                            />
+                            <span className="toggle-slider"></span>
+                          </label>
+                          <span className={`badge ${rev.is_approved ? "ok" : "off"}`} style={{ marginLeft: "8px" }}>
+                            {rev.is_approved ? "Visible" : "Hidden"}
+                          </span>
+                        </td>
+                        <td className="admin-row-actions">
+                          <button
+                            type="button"
+                            className="danger"
+                            onClick={() => deleteReview(rev.id)}
+                          >
+                            Delete
+                          </button>
+                        </td>
+                      </tr>
+                    ))
+                  )}
                 </tbody>
               </table>
             </div>
