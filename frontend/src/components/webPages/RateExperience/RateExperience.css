@@ -1,0 +1,221 @@
+.rate-experience-section {
+  padding: 60px 20px;
+  background-color: var(--off-white) !important;
+  display: flex;
+  justify-content: center;
+}
+
+.rate-container-outer {
+  max-width: 1000px;
+  width: 100%;
+}
+
+/* Outer Card Frame */
+.rate-card-outer {
+  position: relative;
+  background-color: var(--white);
+  border-radius: 24px;
+  padding: 40px 30px;
+  box-shadow: var(--shadow-sm);
+}
+
+/* Decorative Top Right Burger */
+.decor-top-right {
+  position: absolute;
+  top: -35px;
+  right: 50px;
+  z-index: 10;
+  width: 160px;
+  height: 140px;
+  pointer-events: none;
+}
+
+.decor-top-right img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  transform: rotate(5deg);
+}
+
+/* Decorative Bottom Left Hand Burger */
+.decor-bottom-left {
+  position: absolute;
+  bottom: -20px;
+  left: 10px;
+  z-index: 10;
+  width: 180px;
+  height: 170px;
+  pointer-events: none;
+}
+
+.decor-bottom-left img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 20px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* Inner Form Card using --yellow from index.css */
+.rate-card-inner {
+  background-color: var(--ink-soft);
+  border-radius: 20px;
+  padding: 45px 55px;
+  position: relative;
+  z-index: 2;
+}
+
+.rate-title {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 4vw, 2.8rem);
+  color: var(--yellow);
+  margin-bottom: 30px;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+/* Form Layout */
+.rate-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.rate-form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 25px;
+}
+
+.rate-field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.rate-field-group.full-width {
+  grid-column: 1 / -1;
+}
+
+.rate-field-group label {
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--off-white);
+}
+
+/* Inputs & Textarea for Dark Mode Card */
+.rate-input,
+.rate-textarea {
+  background-color: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 24px;
+  padding: 12px 20px;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  color: var(--white);
+  outline: none;
+  transition: var(--transition);
+}
+
+.rate-textarea {
+  border-radius: 16px;
+  resize: vertical;
+}
+
+.rate-input::placeholder,
+.rate-textarea::placeholder {
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.rate-input:focus,
+.rate-textarea:focus {
+  background-color: rgba(255, 255, 255, 0.14);
+  border-color: var(--yellow);
+}
+
+/* Interactive Star Rating */
+.rate-stars-picker {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding-top: 6px;
+}
+
+.rate-star-btn {
+  background: none;
+  border: none;
+  font-size: 1.4rem;
+  color: rgba(255, 255, 255, 0.3);
+  cursor: pointer;
+  transition: transform 0.15s ease, color 0.15s ease;
+  padding: 0;
+}
+
+.rate-star-btn.active {
+  color: var(--yellow);
+}
+
+.rate-star-btn:hover {
+  transform: scale(1.2);
+}
+
+/* Submit Button Row */
+.rate-submit-row {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 10px;
+}
+
+.rate-send-btn {
+  background-color: var(--yellow);
+  color: var(--ink);
+  border: none;
+  border-radius: 30px;
+  padding: 14px 38px;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: var(--transition);
+  box-shadow: 0 4px 16px rgba(255, 193, 7, 0.25);
+}
+
+.rate-send-btn:hover:not(:disabled) {
+  background-color: var(--yellow-hot);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(255, 193, 7, 0.35);
+}
+
+.rate-send-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* Responsive Breakdown */
+@media (max-width: 768px) {
+  .rate-card-inner {
+    padding: 30px 20px;
+  }
+
+  .rate-form-row {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
+  .rate-title {
+    font-size: 2rem;
+  }
+
+  .decor-top-right,
+  .decor-bottom-left {
+    display: none;
+  }
+}
+
