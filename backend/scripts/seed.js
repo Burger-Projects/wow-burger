@@ -91,6 +91,31 @@ async function seed() {
       console.log("Menu items already present — skipping sample insert");
     }
 
+    const [branchCount] = await connection.execute(
+      "SELECT COUNT(*) AS count FROM branches",
+    );
+
+    if (Number(branchCount[0].count) === 0) {
+      await connection.execute(
+        `INSERT INTO branches
+          (name, address, city, phone, email, hours, latitude, longitude, is_primary, is_active, sort_order)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, 1, 1, 0)`,
+        [
+          "Burger House Downtown",
+          "123 Burger Avenue, Foodie District",
+          "New York, NY 10001",
+          "+1 (555) 123-4567",
+          "hello@burgerhouse.com",
+          "Mon – Fri: 10:00 AM – 11:00 PM\nSat – Sun: 9:00 AM – 12:00 AM",
+          40.758,
+          -73.9855,
+        ],
+      );
+      console.log("Seeded sample branch");
+    } else {
+      console.log("Branches already present — skipping sample insert");
+    }
+
     await connection.commit();
     console.log("Seed complete");
   } catch (error) {

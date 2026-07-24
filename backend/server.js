@@ -16,6 +16,7 @@ const app = express();
 const allowedOrigins = [
   process.env.FRONTEND_URL,
   "http://localhost:5173",
+  "http://localhost:5174",
   "https://menu-website-frontend.vercel.app",
 ].filter(Boolean);
 
