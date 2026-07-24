@@ -68,12 +68,32 @@ CREATE TABLE IF NOT EXISTS reviews (
   CONSTRAINT chk_rating CHECK (rating BETWEEN 1 AND 5)
 );
 
--- 6. STORE INFO
+-- 6. STORE INFO (brand-level key/value settings)
 CREATE TABLE IF NOT EXISTS store_info (
   id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
   info_key VARCHAR(50) NOT NULL UNIQUE,
   info_value TEXT NOT NULL,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+-- 7. BRANCHES (one or more store locations for contact map)
+CREATE TABLE IF NOT EXISTS branches (
+  id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(100) NOT NULL,
+  address VARCHAR(255) NOT NULL,
+  city VARCHAR(100) NULL,
+  phone VARCHAR(50) NULL,
+  email VARCHAR(255) NULL,
+  hours TEXT NULL,
+  latitude DECIMAL(10, 7) NOT NULL,
+  longitude DECIMAL(10, 7) NOT NULL,
+  is_primary TINYINT(1) NOT NULL DEFAULT 0,
+  is_active TINYINT(1) NOT NULL DEFAULT 1,
+  sort_order INT NOT NULL DEFAULT 0,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  INDEX idx_branches_active (is_active),
+  INDEX idx_branches_sort (sort_order)
 );
 
 -- Seed categories
