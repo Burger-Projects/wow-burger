@@ -6,16 +6,15 @@ import Footer from "../components/webPages/Footer/footer";
 const Routing = () => {
   const location = useLocation();
   const path = location.pathname.split("/")[1];
-  console.log(path);
+  const hideChrome = ["login", "register", "admin", "menu"].includes(path);
 
   return (
     <>
-      {path !== "login" && <Header />}
+      {!hideChrome && <Header />}
       <div className={path !== "" ? "page-content" : ""}>
-        <div className="header-spacer" />
         <Outlet />
       </div>
-      {path !== "login" && <Footer />}
+      {!hideChrome && <Footer />}
     </>
   );
 };

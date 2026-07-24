@@ -1,10 +1,9 @@
-// src/context/AuthContext.jsx
 import React, { createContext, useContext, useEffect, useState } from "react";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { api } from "../api/client";
 
-const AuthContext = createContext();
+const AuthContext = createContext(null);
 
 const decodeJWT = (token) => {
   if (!token) return null;
@@ -18,13 +17,17 @@ const decodeJWT = (token) => {
         .join(""),
     );
     return JSON.parse(jsonPayload);
-  } catch (error) {
-    console.error("Error decoding JWT:", error);
+  } catch {
     return null;
   }
 };
 
-const BASE_URL = import.meta.env.VITE_BACKEND_URL;
+const userFromDecoded = (decoded) => ({
+  id: decoded.id,
+  email: decoded.email,
+  role: decoded.role,
+  name: decoded.name || decoded.full_name || "",
+});
 
 export const AuthProvider = ({ children }) => {
   const [authState, setAuthState] = useState({
@@ -32,37 +35,24 @@ export const AuthProvider = ({ children }) => {
     user: null,
     isLoading: true,
   });
-
   const navigate = useNavigate();
 
   useEffect(() => {
     let logoutTimer;
 
-    const setupLogoutTimer = (expirationTime) => {
-      if (logoutTimer) clearTimeout(logoutTimer);
-      const remainingTime = expirationTime - Date.now();
-      if (remainingTime > 0) {
-        logoutTimer = setTimeout(() => {
-          handleAutoLogout();
-        }, remainingTime);
-      } else {
-        handleAutoLogout();
-      }
-    };
-
     const handleAutoLogout = () => {
       sessionStorage.removeItem("authToken");
-      sessionStorage.removeItem("selectedBranch");
-
       setAuthState({ token: null, user: null, isLoading: false });
-      navigate("/admin", { replace: true });
       toast.info("Session expired. Please login again.");
+      navigate("/login", { replace: true });
     };
 
     if (authState.token) {
       const decoded = decodeJWT(authState.token);
-      if (decoded && decoded.exp) {
-        setupLogoutTimer(decoded.exp * 1000);
+      if (decoded?.exp) {
+        const remaining = decoded.exp * 1000 - Date.now();
+        if (remaining <= 0) handleAutoLogout();
+        else logoutTimer = setTimeout(handleAutoLogout, remaining);
       }
     }
 
@@ -72,64 +62,40 @@ export const AuthProvider = ({ children }) => {
   }, [authState.token, navigate]);
 
   useEffect(() => {
-    const initializeAuth = () => {
-      const token = sessionStorage.getItem("authToken");
-      if (token) {
-        const decoded = decodeJWT(token);
-        if (decoded && decoded.exp * 1000 > Date.now()) {
-          setAuthState({
-            token,
-            user: {
-              id: decoded.id,
-              email: decoded.email,
-              role: decoded.role,
-              fullName: decoded.full_name,
-              company_id: decoded.company_id,
-              branch_id: decoded.branch_id,
-            },
-            isLoading: false,
-          });
-          return;
-        }
-        sessionStorage.removeItem("authToken");
-        sessionStorage.removeItem("selectedBranch");
+    const token = sessionStorage.getItem("authToken");
+    if (token) {
+      const decoded = decodeJWT(token);
+      if (decoded && decoded.exp * 1000 > Date.now()) {
+        setAuthState({
+          token,
+          user: userFromDecoded(decoded),
+          isLoading: false,
+        });
+        return;
       }
-      setAuthState({ token: null, user: null, isLoading: false });
-    };
-
-    initializeAuth();
+      sessionStorage.removeItem("authToken");
+    }
+    setAuthState({ token: null, user: null, isLoading: false });
   }, []);
+
+  const applyAuth = (token) => {
+    const decoded = decodeJWT(token);
+    if (!decoded) throw new Error("Invalid token");
+    sessionStorage.setItem("authToken", token);
+    const user = userFromDecoded(decoded);
+    setAuthState({ token, user, isLoading: false });
+    return user;
+  };
 
   const login = async (email, password) => {
     try {
-      const response = await axios.post(`${BASE_URL}/api/users/login`, {
-        email,
-        password,
-      });
-
-      if (response.data.success) {
-        const { token } = response.data.data;
-        const decoded = decodeJWT(token);
-
-        if (!decoded) throw new Error("Invalid token");
-
-        sessionStorage.setItem("authToken", token);
-
-        setAuthState({
-          token,
-          user: {
-            id: decoded.id,
-            email: decoded.email,
-            role: decoded.role,
-            fullName: decoded.full_name,
-          },
-          isLoading: false,
-        });
-
-        return { success: true, role: decoded.role };
+      const response = await api.post("/api/users/login", { email, password });
+      if (!response.data.success) {
+        return { success: false, error: response.data.message || "Login failed" };
       }
+      const user = applyAuth(response.data.data.token);
+      return { success: true, role: user.role, user };
     } catch (error) {
-      setAuthState((prev) => ({ ...prev, isLoading: false }));
       return {
         success: false,
         error: error.response?.data?.message || error.message || "Login failed",
@@ -137,12 +103,37 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const register = async ({ name, email, password }) => {
+    try {
+      const response = await api.post("/api/users/register", {
+        name,
+        email,
+        password,
+      });
+      if (!response.data.success) {
+        return {
+          success: false,
+          error: response.data.message || "Registration failed",
+        };
+      }
+      const user = applyAuth(response.data.data.token);
+      return { success: true, role: user.role, user };
+    } catch (error) {
+      return {
+        success: false,
+        error:
+          error.response?.data?.message ||
+          error.message ||
+          "Registration failed",
+      };
+    }
+  };
+
   const logout = () => {
     sessionStorage.removeItem("authToken");
-    sessionStorage.removeItem("selectedBranch");
     setAuthState({ token: null, user: null, isLoading: false });
     navigate("/login", { replace: true });
-    toast.success("Logout successful!");
+    toast.success("Logged out");
   };
 
   const isAuthenticated = () => {
@@ -151,21 +142,34 @@ export const AuthProvider = ({ children }) => {
     const decoded = decodeJWT(token);
     if (!decoded || decoded.exp * 1000 <= Date.now()) {
       sessionStorage.removeItem("authToken");
-      sessionStorage.removeItem("selectedBranch");
-
       setAuthState({ token: null, user: null, isLoading: false });
       return false;
     }
     return true;
   };
 
+  const isAdmin = authState.user?.role === "admin";
+  const isCustomer = authState.user?.role === "customer";
+
   return (
     <AuthContext.Provider
-      value={{ ...authState, login, logout, isAuthenticated }}
+      value={{
+        ...authState,
+        login,
+        register,
+        logout,
+        isAuthenticated,
+        isAdmin,
+        isCustomer,
+      }}
     >
       {children}
     </AuthContext.Provider>
   );
 };
 
-export const useAuth = () => useContext(AuthContext);
+export const useAuth = () => {
+  const ctx = useContext(AuthContext);
+  if (!ctx) throw new Error("useAuth must be used within AuthProvider");
+  return ctx;
+};
