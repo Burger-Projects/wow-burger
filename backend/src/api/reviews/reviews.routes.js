@@ -29,7 +29,9 @@ reviewsRouter.post("/", async (req, res, next) => {
     }
 
     const reviewDate = created_at ? new Date(created_at) : new Date();
-
+    if (created_at && Number.isNaN(reviewDate.getTime())) {
+      return res.status(400).json({ success: false, message: "Invalid review date" });
+    }
     const [result] = await pool.execute(
       "INSERT INTO reviews (customer_name, email, rating, comment, is_approved, created_at) VALUES (?, ?, ?, ?, 0, ?)",
       [
