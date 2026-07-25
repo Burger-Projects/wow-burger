@@ -113,7 +113,7 @@
 .rate-textarea {
   background-color: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 24px;
+  border-radius: 14px;
   padding: 12px 20px;
   font-family: var(--font-body);
   font-size: 0.95rem;
@@ -136,6 +136,7 @@
 .rate-textarea:focus {
   background-color: rgba(255, 255, 255, 0.14);
   border-color: var(--yellow);
+  border-width: 0.1px;
 }
 
 /* Interactive Star Rating */
@@ -149,7 +150,7 @@
 .rate-star-btn {
   background: none;
   border: none;
-  font-size: 1.4rem;
+  font-size: 2rem;
   color: rgba(255, 255, 255, 0.3);
   cursor: pointer;
   transition: transform 0.15s ease, color 0.15s ease;
@@ -172,10 +173,11 @@
 }
 
 .rate-send-btn {
+  width: 85%;
   background-color: var(--yellow);
   color: var(--ink);
   border: none;
-  border-radius: 30px;
+  border-radius: 20px;
   padding: 14px 38px;
   font-family: var(--font-body);
   font-size: 0.95rem;
@@ -218,4 +220,6 @@
     display: none;
   }
 }
+
+
 

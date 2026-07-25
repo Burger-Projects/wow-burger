@@ -1,8 +1,3 @@
-/**
- * Seed default admin + sample menu items.
- * Usage: node scripts/seed.js
- * Env: DB_* from .env, optional SEED_ADMIN_EMAIL / SEED_ADMIN_PASSWORD / SEED_ADMIN_NAME
- */
 import dotenv from "dotenv";
 import bcrypt from "bcrypt";
 import pool from "../database.js";

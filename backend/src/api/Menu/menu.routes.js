@@ -15,6 +15,7 @@ import {
   createMenuItem,
   updateMenuItem,
   deleteMenuItem,
+  rateMenuItem,
 } from "./menu.controller.js";
 import {
   validate,
