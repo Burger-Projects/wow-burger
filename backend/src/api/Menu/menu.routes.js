@@ -97,4 +97,6 @@ menuRouter.delete(
   deleteMenuItem,
 );
 
+menuRouter.post("/menu-items/:id/rate", rateMenuItem);
+
 export default menuRouter;
