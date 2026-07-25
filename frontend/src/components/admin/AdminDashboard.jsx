@@ -340,6 +340,7 @@ const AdminDashboard = () => {
       const res = await api.patch(`/api/reviews/${id}/toggle`);
       toast.success(res.data?.message || "Status updated");
       window.dispatchEvent(new Event("reviews-updated"));
+      localStorage.setItem("reviews_updated_at", Date.now().toString());
       await loadReviews();
     } catch (error) {
       toast.error(error.response?.data?.message || "Failed to toggle status");
@@ -352,6 +353,7 @@ const AdminDashboard = () => {
       await api.delete(`/api/reviews/${id}`);
       toast.success("Review deleted");
       window.dispatchEvent(new Event("reviews-updated"));
+      localStorage.setItem("reviews_updated_at", Date.now().toString());
       await loadReviews();
     } catch (error) {
       toast.error(error.response?.data?.message || "Delete failed");

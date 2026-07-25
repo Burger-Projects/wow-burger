@@ -14,8 +14,62 @@ const Service = () => {
   const [favoriteIds, setFavoriteIds] = useState(new Set());
   const [loading, setLoading] = useState(true);
   const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
+  const [hoverRatings, setHoverRatings] = useState({});
+  const [userRatings, setUserRatings] = useState({});
 
   const canFavorite = Boolean(user) && (isCustomer || isAdmin);
+  const canRate = Boolean(user) && (isCustomer || isAdmin);
+
+  useEffect(() => {
+    if (!canRate || !user?.id) {
+      setUserRatings({});
+      return;
+    }
+    try {
+      const saved = localStorage.getItem(`user_menu_ratings_${user.id}`);
+      setUserRatings(saved ? JSON.parse(saved) : {});
+    } catch {
+      setUserRatings({});
+    }
+  }, [canRate, user?.id]);
+
+  const handleRateItem = async (itemId, ratingVal) => {
+    if (!canRate) {
+      toast.info("Sign in as a customer to rate menu items");
+      return;
+    }
+
+    try {
+      const res = await api.post(`/api/menu/menu-items/${itemId}/rate`, { rating: ratingVal });
+      toast.success(res.data?.message || "Thank you for rating!");
+
+      setUserRatings((prev) => {
+        const next = { ...prev, [itemId]: ratingVal };
+        if (user?.id) {
+          try {
+            localStorage.setItem(`user_menu_ratings_${user.id}`, JSON.stringify(next));
+          } catch (e) {
+            console.error("Failed to save rating:", e);
+          }
+        }
+        return next;
+      });
+
+      setItems((prevItems) =>
+        prevItems.map((item) =>
+          item.id === itemId
+            ? {
+                ...item,
+                avg_rating: res.data.data.avg_rating,
+                rating_count: res.data.data.rating_count,
+              }
+            : item,
+        ),
+      );
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Rating failed");
+    }
+  };
 
   useEffect(() => {
     let cancelled = false;
@@ -165,6 +219,18 @@ const Service = () => {
               return (
                 <article key={item.id} className="menu-card">
                   <div className="menu-card-media">
+                    {/* Top Left Average Rating Badge */}
+                    <div
+                      className="menu-card-rating-badge"
+                      title={`${item.rating_count || 0} customer ratings`}
+                    >
+                      <i className="fas fa-star"></i>
+                      <span>{Number(item.avg_rating || 0).toFixed(1)}</span>
+                      {Number(item.rating_count) > 0 && (
+                        <small>({item.rating_count})</small>
+                      )}
+                    </div>
+
                     {image ? (
                       <img src={image} alt={item.name} loading="lazy" />
                     ) : (
@@ -191,9 +257,44 @@ const Service = () => {
                       </span>
                     </div>
                     <p>{item.description || "Chef’s special."}</p>
-                    {item.category_name && (
-                      <span className="menu-cat-tag">{item.category_name}</span>
-                    )}
+                    <div className="menu-card-footer-row">
+                      {item.category_name && (
+                        <span className="menu-cat-tag">{item.category_name}</span>
+                      )}
+                      {/* Bottom Right 5-Star Rating Picker */}
+                      <div className="menu-card-star-picker">
+                        {[1, 2, 3, 4, 5].map((star) => {
+                          const hoverVal = hoverRatings[item.id] || 0;
+                          const userVal = userRatings[item.id] || 0;
+                          const isFilled = hoverVal > 0 ? hoverVal >= star : userVal >= star;
+                          return (
+                            <button
+                              key={star}
+                              type="button"
+                              className={`card-star-btn ${isFilled ? "active" : ""}`}
+                              onMouseEnter={() =>
+                                setHoverRatings((prev) => ({
+                                  ...prev,
+                                  [item.id]: star,
+                                }))
+                              }
+                              onMouseLeave={() =>
+                                setHoverRatings((prev) => ({
+                                  ...prev,
+                                  [item.id]: 0,
+                                }))
+                              }
+                              onClick={() => handleRateItem(item.id, star)}
+                              aria-label={`Rate ${star} star`}
+                            >
+                              <i
+                                className={`${isFilled ? "fas" : "far"} fa-star`}
+                              ></i>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
                   </div>
                 </article>
               );

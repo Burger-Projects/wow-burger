@@ -15,6 +15,7 @@ import {
   createMenuItem,
   updateMenuItem,
   deleteMenuItem,
+  rateMenuItem,
 } from "./menu.controller.js";
 import {
   validate,
@@ -95,5 +96,7 @@ menuRouter.delete(
   validateParams(idParamSchema),
   deleteMenuItem,
 );
+
+menuRouter.post("/menu-items/:id/rate", rateMenuItem);
 
 export default menuRouter;

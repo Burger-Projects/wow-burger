@@ -161,9 +161,12 @@ export async function getMenuItems(req, res, next) {
     let sql = `
       SELECT mi.id, mi.category_id, mi.name, mi.description, mi.price,
              mi.image_url, mi.is_available, mi.created_at, mi.updated_at,
-             c.name AS category_name, c.slug AS category_slug
+             c.name AS category_name, c.slug AS category_slug,
+             COALESCE(ROUND(AVG(mir.rating), 1), 0) AS avg_rating,
+             COUNT(mir.id) AS rating_count
       FROM menu_items mi
       LEFT JOIN categories c ON c.id = mi.category_id
+      LEFT JOIN menu_item_ratings mir ON mir.menu_item_id = mi.id
       WHERE 1=1
     `;
     const values = [];
@@ -179,7 +182,7 @@ export async function getMenuItems(req, res, next) {
       values.push(isAvailable);
     }
 
-    sql += " ORDER BY c.name ASC, mi.name ASC";
+    sql += " GROUP BY mi.id ORDER BY c.name ASC, mi.name ASC";
 
     const [rows] = await pool.execute(sql, values);
     return res.json({ success: true, data: rows });
@@ -343,6 +346,47 @@ export async function deleteMenuItem(req, res, next) {
     }
 
     return res.json({ success: true, message: "Menu item deleted successfully" });
+  } catch (error) {
+    return next(error);
+  }
+}
+
+
+export async function rateMenuItem(req, res, next) {
+  try {
+    const { id } = req.params;
+    const { rating } = req.body;
+
+    const numericRating = Number(rating);
+    if (!numericRating || numericRating < 1 || numericRating > 5) {
+      return res.status(400).json({ success: false, message: "Rating must be between 1 and 5" });
+    }
+
+    // Verify item exists
+    const [items] = await pool.execute("SELECT id FROM menu_items WHERE id = ?", [id]);
+    if (items.length === 0) {
+      return res.status(404).json({ success: false, message: "Menu item not found" });
+    }
+
+    await pool.execute(
+      "INSERT INTO menu_item_ratings (menu_item_id, rating) VALUES (?, ?)",
+      [id, numericRating],
+    );
+
+    // Calculate new average and rating count
+    const [stats] = await pool.execute(
+      `SELECT COALESCE(ROUND(AVG(rating), 1), 0) AS avg_rating,
+              COUNT(id) AS rating_count
+       FROM menu_item_ratings
+       WHERE menu_item_id = ?`,
+      [id],
+    );
+
+    return res.json({
+      success: true,
+      message: "Thank you for rating!",
+      data: stats[0],
+    });
   } catch (error) {
     return next(error);
   }

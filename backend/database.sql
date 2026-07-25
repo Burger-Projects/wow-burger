@@ -1,6 +1,3 @@
--- Burger House / Menu Website — MySQL schema
--- Run: mysql -u root -p < database.sql
--- Then: npm run seed   (creates default admin)
 
 CREATE DATABASE IF NOT EXISTS menu_website CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE menu_website;
@@ -56,7 +53,7 @@ CREATE TABLE IF NOT EXISTS favorites (
     FOREIGN KEY (menu_item_id) REFERENCES menu_items(id) ON DELETE CASCADE
 );
 
--- 5. REVIEWS
+-- 6. REVIEWS
 CREATE TABLE IF NOT EXISTS reviews (
   id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
   customer_name VARCHAR(100) NOT NULL,
@@ -68,7 +65,18 @@ CREATE TABLE IF NOT EXISTS reviews (
   CONSTRAINT chk_rating CHECK (rating BETWEEN 1 AND 5)
 );
 
--- 6. STORE INFO (brand-level key/value settings)
+-- 7. MENU ITEM RATINGS
+CREATE TABLE IF NOT EXISTS menu_item_ratings (
+  id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  menu_item_id INT UNSIGNED NOT NULL,
+  rating TINYINT UNSIGNED NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT fk_menu_ratings_item
+    FOREIGN KEY (menu_item_id) REFERENCES menu_items(id) ON DELETE CASCADE,
+  CONSTRAINT chk_menu_item_rating CHECK (rating BETWEEN 1 AND 5)
+);
+
+-- 8. STORE INFO (brand-level key/value settings)
 CREATE TABLE IF NOT EXISTS store_info (
   id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
   info_key VARCHAR(50) NOT NULL UNIQUE,

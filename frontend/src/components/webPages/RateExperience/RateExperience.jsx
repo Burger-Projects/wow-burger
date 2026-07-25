@@ -12,7 +12,6 @@ const HAND_BURGER_IMG =
 const RateExperience = () => {
   const [rating, setRating] = useState(5);
   const [hoverRating, setHoverRating] = useState(0);
-  const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [comment, setComment] = useState("");
@@ -37,19 +36,22 @@ const RateExperience = () => {
         email: email,
         rating: rating,
         comment: comment,
-        created_at: date,
+        created_at: new Date().toISOString(),
       });
 
       toast.success(
         res.data?.message || "Thank you! Your feedback has been submitted for moderation.",
       );
 
+      // Notify same-window and cross-window/tab listeners
+      window.dispatchEvent(new Event("reviews-updated"));
+      localStorage.setItem("reviews_updated_at", Date.now().toString());
+
       // Reset form
       setName("");
       setEmail("");
       setComment("");
       setRating(5);
-      setDate(new Date().toISOString().split("T")[0]);
     } catch (error) {
       toast.error(
         error.response?.data?.message || "Failed to submit feedback. Please try again.",
@@ -74,43 +76,7 @@ const RateExperience = () => {
             <h2 className="rate-title">RATE YOUR EXPERIENCE</h2>
 
             <form className="rate-form" onSubmit={handleSubmit}>
-              {/* Row 1: Date & Rating */}
-              <div className="rate-form-row">
-                <div className="rate-field-group">
-                  <label htmlFor="rate-date">Date</label>
-                  <input
-                    id="rate-date"
-                    type="date"
-                    className="rate-input"
-                    value={date}
-                    onChange={(e) => setDate(e.target.value)}
-                  />
-                </div>
-
-                <div className="rate-field-group">
-                  <label>Rating</label>
-                  <div className="rate-stars-picker">
-                    {[1, 2, 3, 4, 5].map((star) => {
-                      const active = star <= (hoverRating || rating);
-                      return (
-                        <button
-                          key={star}
-                          type="button"
-                          className={`rate-star-btn ${active ? "active" : ""}`}
-                          onClick={() => setRating(star)}
-                          onMouseEnter={() => setHoverRating(star)}
-                          onMouseLeave={() => setHoverRating(0)}
-                          aria-label={`Rate ${star} star${star > 1 ? "s" : ""}`}
-                        >
-                          <FaStar />
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
-              </div>
-
-              {/* Row 2: Name & Email */}
+              {/* Row 1: Name & Email */}
               <div className="rate-form-row">
                 <div className="rate-field-group">
                   <label htmlFor="rate-name">Name</label>
@@ -135,6 +101,29 @@ const RateExperience = () => {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                   />
+                </div>
+              </div>
+
+              {/* Row 2: Rating */}
+              <div className="rate-field-group full-width">
+                <label>Rating</label>
+                <div className="rate-stars-picker">
+                  {[1, 2, 3, 4, 5].map((star) => {
+                    const active = star <= (hoverRating || rating);
+                    return (
+                      <button
+                        key={star}
+                        type="button"
+                        className={`rate-star-btn ${active ? "active" : ""}`}
+                        onClick={() => setRating(star)}
+                        onMouseEnter={() => setHoverRating(star)}
+                        onMouseLeave={() => setHoverRating(0)}
+                        aria-label={`Rate ${star} star${star > 1 ? "s" : ""}`}
+                      >
+                        <FaStar />
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
 
