@@ -202,22 +202,104 @@
 
 /* Responsive Breakdown */
 @media (max-width: 768px) {
+  .rate-experience-section {
+    padding: 40px 12px;
+  }
+
+  .rate-card-outer {
+    padding: 24px 16px;
+    border-radius: 18px;
+  }
+
   .rate-card-inner {
-    padding: 30px 20px;
+    padding: 32px 20px;
+    border-radius: 16px;
+  }
+
+  .rate-title {
+    font-size: 1.65rem;
+    text-align: center;
+    margin-bottom: 24px;
   }
 
   .rate-form-row {
     grid-template-columns: 1fr;
-    gap: 15px;
+    gap: 16px;
+  }
+
+  .rate-stars-picker {
+    justify-content: center;
+  }
+
+  .rate-star-btn {
+    font-size: 1.8rem;
+  }
+
+  .rate-submit-row {
+    justify-content: center;
+  }
+
+  .rate-send-btn {
+    width: 100%;
+    padding: 13px 24px;
+  }
+
+  .decor-top-right {
+    width: 90px;
+    height: 80px;
+    top: -25px;
+    right: 15px;
+  }
+
+  .decor-bottom-left {
+    width: 95px;
+    height: 90px;
+    bottom: -15px;
+    left: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .rate-experience-section {
+    padding: 30px 8px;
+  }
+
+  .rate-card-outer {
+    padding: 16px 10px;
+    border-radius: 14px;
+  }
+
+  .rate-card-inner {
+    padding: 24px 14px;
+    border-radius: 12px;
   }
 
   .rate-title {
-    font-size: 2rem;
+    font-size: 1.4rem;
   }
 
-  .decor-top-right,
+  .rate-input,
+  .rate-textarea {
+    padding: 10px 14px;
+    font-size: 0.9rem;
+  }
+
+  .rate-star-btn {
+    font-size: 1.6rem;
+  }
+
+  .decor-top-right {
+    width: 70px;
+    height: 60px;
+    top: -20px;
+    right: 10px;
+  }
+
   .decor-bottom-left {
-    display: none;
+    width: 75px;
+    height: 70px;
+    bottom: -10px;
+    left: 5px;
   }
 }
 

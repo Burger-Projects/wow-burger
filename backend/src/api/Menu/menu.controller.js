@@ -356,6 +356,7 @@ export async function rateMenuItem(req, res, next) {
   try {
     const { id } = req.params;
     const { rating } = req.body;
+    const userId = req.user?.id || null;
 
     const numericRating = Number(rating);
     if (!numericRating || numericRating < 1 || numericRating > 5) {
@@ -368,10 +369,30 @@ export async function rateMenuItem(req, res, next) {
       return res.status(404).json({ success: false, message: "Menu item not found" });
     }
 
-    await pool.execute(
-      "INSERT INTO menu_item_ratings (menu_item_id, rating) VALUES (?, ?)",
-      [id, numericRating],
-    );
+    if (userId) {
+      // Upsert: replace if user already rated this item, else insert
+      const [existing] = await pool.execute(
+        "SELECT id FROM menu_item_ratings WHERE menu_item_id = ? AND user_id = ?",
+        [id, userId],
+      );
+
+      if (existing.length > 0) {
+        await pool.execute(
+          "UPDATE menu_item_ratings SET rating = ? WHERE menu_item_id = ? AND user_id = ?",
+          [numericRating, id, userId],
+        );
+      } else {
+        await pool.execute(
+          "INSERT INTO menu_item_ratings (menu_item_id, user_id, rating) VALUES (?, ?, ?)",
+          [id, userId, numericRating],
+        );
+      }
+    } else {
+      await pool.execute(
+        "INSERT INTO menu_item_ratings (menu_item_id, rating) VALUES (?, ?)",
+        [id, numericRating],
+      );
+    }
 
     // Calculate new average and rating count
     const [stats] = await pool.execute(

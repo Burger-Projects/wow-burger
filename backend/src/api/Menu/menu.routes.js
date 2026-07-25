@@ -97,6 +97,26 @@ menuRouter.delete(
   deleteMenuItem,
 );
 
-menuRouter.post("/menu-items/:id/rate", rateMenuItem);
+import jwt from "jsonwebtoken";
+
+function optionalAuth(req, _res, next) {
+  const authHeader = req.headers.authorization;
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    return next();
+  }
+  const token = authHeader.split(" ")[1];
+  if (!token || token === "null" || token === "undefined") {
+    return next();
+  }
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = decoded;
+  } catch {
+    // Ignore invalid token for optional auth
+  }
+  return next();
+}
+
+menuRouter.post("/menu-items/:id/rate", optionalAuth, rateMenuItem);
 
 export default menuRouter;

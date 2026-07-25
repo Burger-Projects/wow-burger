@@ -79,7 +79,6 @@ reviewsRouter.get("/admin", authenticate(["admin"]), async (req, res, next) => {
     const [reviews] = await pool.execute(
       "SELECT id, customer_name, email, rating, comment, is_approved, created_at FROM reviews ORDER BY created_at DESC",
     );
-
     return res.json({
       success: true,
       data: reviews,

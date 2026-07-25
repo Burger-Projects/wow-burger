@@ -69,11 +69,15 @@ CREATE TABLE IF NOT EXISTS reviews (
 CREATE TABLE IF NOT EXISTS menu_item_ratings (
   id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
   menu_item_id INT UNSIGNED NOT NULL,
+  user_id INT UNSIGNED NULL,
   rating TINYINT UNSIGNED NOT NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   CONSTRAINT fk_menu_ratings_item
     FOREIGN KEY (menu_item_id) REFERENCES menu_items(id) ON DELETE CASCADE,
-  CONSTRAINT chk_menu_item_rating CHECK (rating BETWEEN 1 AND 5)
+  CONSTRAINT fk_menu_ratings_user
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+  CONSTRAINT chk_menu_item_rating CHECK (rating BETWEEN 1 AND 5),
+  UNIQUE KEY uq_user_menu_rating (menu_item_id, user_id)
 );
 
 -- 8. STORE INFO (brand-level key/value settings)

@@ -4,10 +4,12 @@ import { toast } from "react-toastify";
 import { api } from "../../../api/client";
 import "./RateExperience.css";
 
-const TOP_BURGER_IMG =
-  "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=500&q=80";
-const HAND_BURGER_IMG =
-  "https://images.unsplash.com/photo-1550547660-d9450f859349?auto=format&fit=crop&w=500&q=80";
+import topBurgerImg from "../../../assets/b5.jpg";
+import handBurgerImg from "../../../assets/b1.jpg";
+
+
+const TOP_BURGER_IMG = topBurgerImg;
+const HAND_BURGER_IMG = handBurgerImg;
 
 const RateExperience = () => {
   const [rating, setRating] = useState(5);
