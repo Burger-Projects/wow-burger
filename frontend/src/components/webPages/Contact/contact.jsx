@@ -1,7 +1,43 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { api } from "../../../api/client";
+import BranchMap from "./BranchMap";
 import "./contact.css";
 
 const Contact = () => {
+  const [branches, setBranches] = useState([]);
+  const [selectedId, setSelectedId] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await api.get("/api/branches");
+        const list = res.data.data || [];
+        if (cancelled) return;
+        setBranches(list);
+        const primary = list.find((b) => b.is_primary) || list[0];
+        setSelectedId(primary?.id ?? null);
+      } catch {
+        if (!cancelled) setBranches([]);
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const selected =
+    branches.find((b) => b.id === selectedId) || branches[0] || null;
+  const hasMultiple = branches.length > 1;
+
+  const formatHours = (hours) => {
+    if (!hours) return null;
+    return hours.split("\n").filter(Boolean);
+  };
+
   return (
     <section id="contact" className="contact-section">
       <div className="container">
@@ -22,14 +58,71 @@ const Contact = () => {
                 Open seven days a week. Walk in, call ahead, or drop us a note.
               </p>
 
+              {hasMultiple && (
+                <div className="branch-picker">
+                  <h4>Our Branches</h4>
+                  <div className="branch-picker-list">
+                    {branches.map((branch) => (
+                      <button
+                        key={branch.id}
+                        type="button"
+                        className={`branch-chip ${
+                          selected?.id === branch.id ? "active" : ""
+                        }`}
+                        onClick={() => setSelectedId(branch.id)}
+                      >
+                        {branch.name}
+                        {branch.is_primary ? " · Main" : ""}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {!loading && branches.length > 0 && (
+                <>
+                  <BranchMap
+                    branches={branches}
+                    selectedId={selected?.id}
+                    onSelect={setSelectedId}
+                  />
+                  {selected && (
+                    <a
+                      className="contact-directions-btn"
+                      href={`https://www.google.com/maps/dir/?api=1&destination=${selected.latitude},${selected.longitude}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <i className="fas fa-location-arrow" aria-hidden="true"></i>
+                      Take me there
+                    </a>
+                  )}
+                </>
+              )}
+
               <div className="contact-details">
                 <div className="contact-item">
                   <div className="contact-item-icon">
                     <i className="fas fa-map-marker-alt"></i>
                   </div>
                   <div className="contact-item-text">
-                    <h4>Location</h4>
-                    <p>123 Burger Avenue, Foodie District, New York, NY 10001</p>
+                    <h4>
+                      {hasMultiple && selected
+                        ? selected.name
+                        : "Location"}
+                    </h4>
+                    {selected ? (
+                      <>
+                        <p>{selected.address}</p>
+                        {selected.city ? <p>{selected.city}</p> : null}
+                      </>
+                    ) : (
+                      <p>
+                        {loading
+                          ? "Loading location…"
+                          : "Address coming soon — check back shortly."}
+                      </p>
+                    )}
                   </div>
                 </div>
 
@@ -39,7 +132,7 @@ const Contact = () => {
                   </div>
                   <div className="contact-item-text">
                     <h4>Call</h4>
-                    <p>+1 (555) 123-4567</p>
+                    <p>{selected?.phone || "+1 (555) 123-4567"}</p>
                   </div>
                 </div>
 
@@ -49,7 +142,7 @@ const Contact = () => {
                   </div>
                   <div className="contact-item-text">
                     <h4>Email</h4>
-                    <p>hello@burgerhouse.com</p>
+                    <p>{selected?.email || "hello@burgerhouse.com"}</p>
                   </div>
                 </div>
 
@@ -59,8 +152,16 @@ const Contact = () => {
                   </div>
                   <div className="contact-item-text">
                     <h4>Hours</h4>
-                    <p>Mon – Fri: 10:00 AM – 11:00 PM</p>
-                    <p>Sat – Sun: 9:00 AM – 12:00 AM</p>
+                    {selected?.hours ? (
+                      formatHours(selected.hours).map((line) => (
+                        <p key={line}>{line}</p>
+                      ))
+                    ) : (
+                      <>
+                        <p>Mon – Fri: 10:00 AM – 11:00 PM</p>
+                        <p>Sat – Sun: 9:00 AM – 12:00 AM</p>
+                      </>
+                    )}
                   </div>
                 </div>
               </div>

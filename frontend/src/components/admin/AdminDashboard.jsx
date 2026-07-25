@@ -4,6 +4,7 @@ import { toast } from "react-toastify";
 import { useAuth } from "../../context/AuthContext";
 import { api, resolveImageUrl } from "../../api/client";
 import LoadingSpinner from "../common/LoadingSpinner";
+import BranchPinMap from "./BranchPinMap";
 import "./admin.css";
 
 const emptyItemForm = {
@@ -18,6 +19,20 @@ const emptyItemForm = {
 const emptyCategoryForm = {
   name: "",
   slug: "",
+};
+
+const emptyBranchForm = {
+  name: "",
+  address: "",
+  city: "",
+  phone: "",
+  email: "",
+  hours: "",
+  latitude: "",
+  longitude: "",
+  is_primary: false,
+  is_active: true,
+  sort_order: "0",
 };
 
 const AdminDashboard = () => {
@@ -47,6 +62,15 @@ const AdminDashboard = () => {
 
   const [reviews, setReviews] = useState([]);
 
+  // ─── Branch State ───────────────────────────────────────────────────────────
+  const [branches, setBranches] = useState([]);
+  const [branchForm, setBranchForm] = useState(emptyBranchForm);
+  const [editingBranchId, setEditingBranchId] = useState(null);
+  const [branchBusy, setBranchBusy] = useState(false);
+  const [geocodeBusy, setGeocodeBusy] = useState(false);
+  const [locateBusy, setLocateBusy] = useState(false);
+  const [pinFlyVersion, setPinFlyVersion] = useState(0);
+
   const loadMenu = async () => {
     const [menuRes, catRes] = await Promise.all([
       api.get("/api/menu/menu-items"),
@@ -66,6 +90,11 @@ const AdminDashboard = () => {
     setReviews(res.data.data || []);
   };
 
+  const loadBranches = async () => {
+    const res = await api.get("/api/branches/admin");
+    setBranches(res.data.data || []);
+  };
+
   useEffect(() => {
     if (!isAdmin) return;
     loadMenu().catch((e) =>
@@ -74,7 +103,14 @@ const AdminDashboard = () => {
   }, [isAdmin]);
 
   useEffect(() => {
-    if (!isAdmin || (tab !== "users" && tab !== "categories" && tab !== "reviews")) return;
+    if (
+      !isAdmin ||
+      (tab !== "users" &&
+        tab !== "categories" &&
+        tab !== "reviews" &&
+        tab !== "branches")
+    )
+      return;
     if (tab === "users") {
       loadUsers().catch((e) =>
         toast.error(e.response?.data?.message || "Failed to load users"),
@@ -82,6 +118,10 @@ const AdminDashboard = () => {
     } else if (tab === "reviews") {
       loadReviews().catch((e) =>
         toast.error(e.response?.data?.message || "Failed to load reviews"),
+      );
+    } else if (tab === "branches") {
+      loadBranches().catch((e) =>
+        toast.error(e.response?.data?.message || "Failed to load branches"),
       );
     }
   }, [isAdmin, tab]);
@@ -320,6 +360,156 @@ const AdminDashboard = () => {
     }
   };
 
+  // ─── Branch Handlers ────────────────────────────────────────────────────────
+
+  const onBranchFormChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setBranchForm((prev) => ({
+      ...prev,
+      [name]: type === "checkbox" ? checked : value,
+    }));
+  };
+
+  const startEditBranch = (branch) => {
+    resetBranchForm();
+    setTimeout(() => {
+      setEditingBranchId(branch.id);
+      setBranchForm({
+        name: branch.name || "",
+        address: branch.address || "",
+        city: branch.city || "",
+        phone: branch.phone || "",
+        email: branch.email || "",
+        hours: branch.hours || "",
+        latitude: String(branch.latitude ?? ""),
+        longitude: String(branch.longitude ?? ""),
+        is_primary: Boolean(branch.is_primary),
+        is_active: Boolean(branch.is_active),
+        sort_order: String(branch.sort_order ?? 0),
+      });
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }, 0);
+  };
+
+  const resetBranchForm = () => {
+    setEditingBranchId(null);
+    setBranchForm(emptyBranchForm);
+  };
+
+  const lookupCoordinates = async () => {
+    const query = [branchForm.address, branchForm.city].filter(Boolean).join(", ");
+    if (!query.trim()) {
+      toast.error("Enter an address first");
+      return;
+    }
+    setGeocodeBusy(true);
+    try {
+      const url = `https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURIComponent(query)}`;
+      const res = await fetch(url, {
+        headers: { Accept: "application/json" },
+      });
+      const results = await res.json();
+      if (!results?.length) {
+        toast.error("Could not find that address on the map");
+        return;
+      }
+      setBranchForm((prev) => ({
+        ...prev,
+        latitude: String(Number(results[0].lat).toFixed(7)),
+        longitude: String(Number(results[0].lon).toFixed(7)),
+      }));
+      setPinFlyVersion((v) => v + 1);
+      toast.success("Pin moved to address — adjust on the map if needed");
+    } catch {
+      toast.error("Address search failed");
+    } finally {
+      setGeocodeBusy(false);
+    }
+  };
+
+  const setBranchPin = (lat, lng) => {
+    setBranchForm((prev) => ({
+      ...prev,
+      latitude: String(Number(lat).toFixed(7)),
+      longitude: String(Number(lng).toFixed(7)),
+    }));
+  };
+
+  const useMyLocation = () => {
+    if (!navigator.geolocation) {
+      toast.error("Location is not supported in this browser");
+      return;
+    }
+    setLocateBusy(true);
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        setBranchPin(pos.coords.latitude, pos.coords.longitude);
+        setPinFlyVersion((v) => v + 1);
+        setLocateBusy(false);
+        toast.success("Pinned to your current location — adjust if needed");
+      },
+      (err) => {
+        setLocateBusy(false);
+        if (err.code === err.PERMISSION_DENIED) {
+          toast.error("Location permission denied");
+        } else {
+          toast.error("Could not get your current location");
+        }
+      },
+      { enableHighAccuracy: true, timeout: 12000 },
+    );
+  };
+
+  const submitBranch = async (e) => {
+    e.preventDefault();
+    if (!branchForm.latitude || !branchForm.longitude) {
+      toast.error("Click the map to pin this branch location");
+      return;
+    }
+    setBranchBusy(true);
+    try {
+      const payload = {
+        name: branchForm.name,
+        address: branchForm.address,
+        city: branchForm.city || null,
+        phone: branchForm.phone || null,
+        email: branchForm.email || null,
+        hours: branchForm.hours || null,
+        latitude: Number(branchForm.latitude),
+        longitude: Number(branchForm.longitude),
+        is_primary: branchForm.is_primary,
+        is_active: branchForm.is_active,
+        sort_order: Number(branchForm.sort_order) || 0,
+      };
+
+      if (editingBranchId) {
+        await api.put(`/api/branches/${editingBranchId}`, payload);
+        toast.success("Branch updated");
+      } else {
+        await api.post("/api/branches", payload);
+        toast.success("Branch created");
+      }
+      resetBranchForm();
+      await loadBranches();
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Failed to save branch");
+    } finally {
+      setBranchBusy(false);
+    }
+  };
+
+  const deleteBranch = async (id) => {
+    if (!window.confirm("Delete this branch?")) return;
+    try {
+      await api.delete(`/api/branches/${id}`);
+      toast.success("Branch deleted");
+      if (editingBranchId === id) resetBranchForm();
+      await loadBranches();
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Delete failed");
+    }
+  };
+
   if (isLoading) return <LoadingSpinner />;
   if (!user) return <Navigate to="/login" replace />;
   if (!isAdmin) return <Navigate to="/" replace />;
@@ -364,6 +554,13 @@ const AdminDashboard = () => {
           onClick={() => setTab("reviews")}
         >
           Reviews ({reviews.length})
+        </button>
+        <button
+          type="button"
+          className={tab === "branches" ? "active" : ""}
+          onClick={() => setTab("branches")}
+        >
+          Branches
         </button>
         <button
           type="button"
@@ -699,6 +896,206 @@ const AdminDashboard = () => {
                       </td>
                     </tr>
                   ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ─── Branches Tab ─────────────────────────────────────────────────────── */}
+      {tab === "branches" && (
+        <div className="admin-grid">
+          <form className="admin-card" onSubmit={submitBranch}>
+            <h2>{editingBranchId ? "Edit Branch" : "Add Branch"}</h2>
+            <p className="admin-hint">
+              Add one or more locations. They appear on the contact map.
+            </p>
+            <label>
+              Branch name
+              <input
+                name="name"
+                value={branchForm.name}
+                onChange={onBranchFormChange}
+                placeholder="Downtown"
+                required
+              />
+            </label>
+            <label>
+              Address
+              <input
+                name="address"
+                value={branchForm.address}
+                onChange={onBranchFormChange}
+                placeholder="123 Burger Avenue"
+                required
+              />
+            </label>
+            <label>
+              City / region
+              <input
+                name="city"
+                value={branchForm.city}
+                onChange={onBranchFormChange}
+                placeholder="New York, NY 10001"
+              />
+            </label>
+            <label>
+              Phone
+              <input
+                name="phone"
+                value={branchForm.phone}
+                onChange={onBranchFormChange}
+                placeholder="+1 (555) 123-4567"
+              />
+            </label>
+            <label>
+              Email
+              <input
+                type="email"
+                name="email"
+                value={branchForm.email}
+                onChange={onBranchFormChange}
+                placeholder="hello@burgerhouse.com"
+              />
+            </label>
+            <label>
+              Hours
+              <textarea
+                name="hours"
+                rows={3}
+                value={branchForm.hours}
+                onChange={onBranchFormChange}
+                placeholder={"Mon – Fri: 10:00 AM – 11:00 PM\nSat – Sun: 9:00 AM – 12:00 AM"}
+              />
+            </label>
+            <div className="admin-map-field">
+              <span className="admin-map-label">Pin on map</span>
+              <BranchPinMap
+                latitude={branchForm.latitude || null}
+                longitude={branchForm.longitude || null}
+                onPin={setBranchPin}
+                mapKey={editingBranchId || "new"}
+                flyVersion={pinFlyVersion}
+              />
+              <div className="admin-map-actions">
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  onClick={useMyLocation}
+                  disabled={locateBusy}
+                >
+                  {locateBusy ? "Locating…" : "Use my current location"}
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  onClick={lookupCoordinates}
+                  disabled={geocodeBusy}
+                >
+                  {geocodeBusy ? "Searching…" : "Search address on map"}
+                </button>
+              </div>
+            </div>
+            <label>
+              Sort order
+              <input
+                type="number"
+                name="sort_order"
+                value={branchForm.sort_order}
+                onChange={onBranchFormChange}
+              />
+            </label>
+            <label className="admin-check">
+              <input
+                type="checkbox"
+                name="is_primary"
+                checked={branchForm.is_primary}
+                onChange={onBranchFormChange}
+              />
+              Primary branch (default on contact page)
+            </label>
+            <label className="admin-check">
+              <input
+                type="checkbox"
+                name="is_active"
+                checked={branchForm.is_active}
+                onChange={onBranchFormChange}
+              />
+              Active (show on website)
+            </label>
+            <div className="admin-form-actions">
+              <button className="btn btn-primary" type="submit" disabled={branchBusy}>
+                {branchBusy ? "Saving..." : editingBranchId ? "Update" : "Create"}
+              </button>
+              {editingBranchId && (
+                <button type="button" className="btn btn-secondary" onClick={resetBranchForm}>
+                  Cancel
+                </button>
+              )}
+            </div>
+          </form>
+
+          <div className="admin-card admin-list">
+            <h2>All Branches ({branches.length})</h2>
+            <div className="admin-table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Address</th>
+                    <th>Status</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {branches.length === 0 ? (
+                    <tr>
+                      <td colSpan="4" style={{ textAlign: "center", padding: "20px" }}>
+                        No branches yet. Add your first location.
+                      </td>
+                    </tr>
+                  ) : (
+                    branches.map((branch) => (
+                      <tr key={branch.id}>
+                        <td>
+                          <strong>{branch.name}</strong>
+                          {branch.is_primary ? (
+                            <span className="badge ok" style={{ marginLeft: 8 }}>
+                              Primary
+                            </span>
+                          ) : null}
+                        </td>
+                        <td>
+                          {branch.address}
+                          {branch.city ? (
+                            <div style={{ fontSize: "0.82rem", color: "#666" }}>
+                              {branch.city}
+                            </div>
+                          ) : null}
+                        </td>
+                        <td>
+                          {branch.is_active ? (
+                            <span className="badge ok">Visible</span>
+                          ) : (
+                            <span className="badge off">Hidden</span>
+                          )}
+                        </td>
+                        <td className="admin-row-actions">
+                          <button type="button" onClick={() => startEditBranch(branch)}>
+                            Edit
+                          </button>
+                          <button
+                            type="button"
+                            className="danger"
+                            onClick={() => deleteBranch(branch.id)}
+                          >
+                            Delete
+                          </button>
+                        </td>
+                      </tr>
+                    ))
+                  )}
                 </tbody>
               </table>
             </div>
