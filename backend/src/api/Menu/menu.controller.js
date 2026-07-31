@@ -182,7 +182,7 @@ export async function getMenuItems(req, res, next) {
       values.push(isAvailable);
     }
 
-    sql += " GROUP BY mi.id ORDER BY c.name ASC, mi.name ASC";
+    sql += " GROUP BY mi.id, c.name, c.slug ORDER BY c.name ASC, mi.name ASC";
 
     const [rows] = await pool.execute(sql, values);
     return res.json({ success: true, data: rows });
