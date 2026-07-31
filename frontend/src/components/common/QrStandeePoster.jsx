@@ -7,9 +7,9 @@ import "./QrStandeePoster.css";
 const QrStandeePoster = ({ defaultUrl }) => {
   const isLocalHost = typeof window !== "undefined" && (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1");
 
-  // Default to public Render production URL if running on localhost so real mobile phone scans work immediately
-  const productionUrl = "https://wow-burger-ui.onrender.com/menu";
-  const initialUrl = defaultUrl || (isLocalHost ? productionUrl : `${window.location.origin}/menu`);
+  // Default to public Render production URL with HashRouter path so real mobile phone scans work 100% reliably
+  const productionUrl = "https://wow-burger-ui.onrender.com/#/menu";
+  const initialUrl = defaultUrl || (isLocalHost ? productionUrl : `${window.location.origin}/#/menu`);
 
   const [qrUrl, setQrUrl] = useState(initialUrl);
   const [tableNo, setTableNo] = useState("");
@@ -34,7 +34,7 @@ const QrStandeePoster = ({ defaultUrl }) => {
           <div className="qr-notice-banner">
             <i className="fas fa-info-circle"></i>
             <span>
-              <strong>Mobile Scan Tip:</strong> Since you are running locally on <code>localhost</code>, mobile phones cannot open <code>localhost</code>. We set the default QR target to your live Render website URL!
+              <strong>Mobile Scan Tip:</strong> Since you are running locally on <code>localhost</code>, mobile phones cannot open <code>localhost</code>. We set the default QR target to your live Render website URL (<code>/#/menu</code>)!
             </span>
           </div>
         )}
@@ -45,20 +45,20 @@ const QrStandeePoster = ({ defaultUrl }) => {
             type="url"
             value={qrUrl}
             onChange={(e) => setQrUrl(e.target.value)}
-            placeholder="https://wow-burger-ui.onrender.com/menu"
+            placeholder="https://wow-burger-ui.onrender.com/#/menu"
           />
           <div className="qr-preset-buttons">
             <button
               type="button"
               className="qr-preset-btn"
-              onClick={() => setQrUrl("https://wow-burger-ui.onrender.com/menu")}
+              onClick={() => setQrUrl("https://wow-burger-ui.onrender.com/#/menu")}
             >
-              Use Render Site URL
+              Use Render Site URL (/#/menu)
             </button>
             <button
               type="button"
               className="qr-preset-btn"
-              onClick={() => setQrUrl(`${window.location.origin}/menu`)}
+              onClick={() => setQrUrl(`${window.location.origin}/#/menu`)}
             >
               Use Current Domain
             </button>
