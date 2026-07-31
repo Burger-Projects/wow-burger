@@ -11,6 +11,7 @@ const MenuPage = () => {
   const [items, setItems] = useState([]);
   const [categories, setCategories] = useState([]);
   const [activeCategory, setActiveCategory] = useState("all");
+  const [searchQuery, setSearchQuery] = useState("");
   const [favoriteIds, setFavoriteIds] = useState(new Set());
   const [loading, setLoading] = useState(true);
   const [hoverRatings, setHoverRatings] = useState({});
