@@ -9,7 +9,8 @@
     "start": "node server.js",
     "dev": "nodemon server.js",
     "seed": "node scripts/seed.js",
-    "migrate:branches": "node scripts/migrate-branches.js"
+    "migrate:branches": "node scripts/migrate-branches.js",
+    "setup:supabase": "node scripts/setup-supabase.js"
   },
   "keywords": [],
   "author": "",

@@ -4,8 +4,8 @@ import { toast } from "react-toastify";
 import { api } from "../../../api/client";
 import "./RateExperience.css";
 
-import topBurgerImg from "../../../assets/b5.jpg";
-import handBurgerImg from "../../../assets/b1.jpg";
+import topBurgerImg from "../../../Assets/b5.jpg";
+import handBurgerImg from "../../../Assets/b1.jpg";
 
 
 const TOP_BURGER_IMG = topBurgerImg;
