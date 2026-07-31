@@ -5,12 +5,17 @@ import wowLogo from "../../Assets/wow-burger-logo.png";
 import "./QrStandeePoster.css";
 
 const QrStandeePoster = ({ defaultUrl }) => {
-  const targetUrl = defaultUrl || (typeof window !== "undefined" ? `${window.location.origin}/menu` : "https://wow-burger-ui.onrender.com/menu");
-  const [qrUrl, setQrUrl] = useState(targetUrl);
+  const isLocalHost = typeof window !== "undefined" && (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1");
+
+  // Default to public Render production URL if running on localhost so real mobile phone scans work immediately
+  const productionUrl = "https://wow-burger-ui.onrender.com/menu";
+  const initialUrl = defaultUrl || (isLocalHost ? productionUrl : `${window.location.origin}/menu`);
+
+  const [qrUrl, setQrUrl] = useState(initialUrl);
   const [tableNo, setTableNo] = useState("");
   const posterRef = useRef(null);
 
-  const fullUrl = tableNo.trim() ? `${qrUrl}?table=${encodeURIComponent(tableNo.trim())}` : qrUrl;
+  const fullUrl = tableNo.trim() ? `${qrUrl}${qrUrl.includes("?") ? "&" : "?"}table=${encodeURIComponent(tableNo.trim())}` : qrUrl;
 
   const handleCopyLink = () => {
     navigator.clipboard.writeText(fullUrl);
@@ -25,14 +30,39 @@ const QrStandeePoster = ({ defaultUrl }) => {
     <div className="qr-standee-container">
       {/* Controls Bar (Hidden during print) */}
       <div className="qr-controls-bar no-print">
+        {isLocalHost && (
+          <div className="qr-notice-banner">
+            <i className="fas fa-info-circle"></i>
+            <span>
+              <strong>Mobile Scan Tip:</strong> Since you are running locally on <code>localhost</code>, mobile phones cannot open <code>localhost</code>. We set the default QR target to your live Render website URL!
+            </span>
+          </div>
+        )}
+
         <div className="qr-control-field">
-          <label>QR Menu URL:</label>
+          <label>QR Target Menu URL:</label>
           <input
             type="url"
             value={qrUrl}
             onChange={(e) => setQrUrl(e.target.value)}
             placeholder="https://wow-burger-ui.onrender.com/menu"
           />
+          <div className="qr-preset-buttons">
+            <button
+              type="button"
+              className="qr-preset-btn"
+              onClick={() => setQrUrl("https://wow-burger-ui.onrender.com/menu")}
+            >
+              Use Render Site URL
+            </button>
+            <button
+              type="button"
+              className="qr-preset-btn"
+              onClick={() => setQrUrl(`${window.location.origin}/menu`)}
+            >
+              Use Current Domain
+            </button>
+          </div>
         </div>
 
         <div className="qr-control-field">
