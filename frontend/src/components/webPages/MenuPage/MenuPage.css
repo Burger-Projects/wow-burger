@@ -365,26 +365,132 @@
   font-size: 0.72rem;
 }
 
-/* ─── Responsive ───────────────────────── */
+/* ─── Responsive & Mobile Optimization ───────────────────────── */
 @media (max-width: 768px) {
+  .menu-page-section {
+    padding-bottom: 40px;
+  }
+
   .menu-page-hero {
-    height: 240px;
+    height: 220px;
+  }
+
+  .menu-page-hero-content {
+    padding: 0 16px;
+  }
+
+  .menu-page-hero-content h1 {
+    font-size: 2.2rem;
+    margin-bottom: 8px;
+  }
+
+  .menu-page-hero-content p {
+    font-size: 0.88rem;
+    line-height: 1.4;
+  }
+
+  .menu-page-container {
+    padding: 0 14px;
   }
 
   .menu-page-toolbar {
     flex-direction: column;
     align-items: stretch;
+    gap: 12px;
+    margin: 20px 0 20px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(13, 13, 13, 0.95);
+    padding: 12px 0;
+    backdrop-filter: blur(10px);
+  }
+
+  /* Horizontal swipeable category list on mobile */
+  .menu-page-categories {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding-bottom: 6px;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+  }
+
+  .menu-page-categories::-webkit-scrollbar {
+    display: none;
+  }
+
+  .menu-page-cat-btn {
+    flex: 0 0 auto;
+    scroll-snap-align: start;
+    padding: 8px 16px;
+    font-size: 0.78rem;
+    border-radius: 20px;
   }
 
   .menu-page-search {
-    min-width: unset;
+    min-width: 100%;
+    border-radius: 8px;
+  }
+
+  .menu-page-search input {
+    padding: 10px 0;
+    font-size: 0.88rem;
   }
 
   .menu-page-grid {
     grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .menu-page-card {
+    border-radius: 12px;
+  }
+
+  .menu-page-card-media {
+    height: 180px;
+  }
+
+  .menu-page-card-body {
+    padding: 16px;
+  }
+
+  .menu-page-card-header h3 {
+    font-size: 1.1rem;
+  }
+
+  .menu-page-price {
+    font-size: 1.15rem;
+  }
+
+  .menu-page-card-footer {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .menu-card-star-picker {
+    width: 100%;
+    justify-content: flex-start;
+    gap: 6px;
+  }
+
+  .card-star-btn {
+    padding: 6px 8px;
+    font-size: 1.15rem;
   }
 
   .menu-page-count {
     text-align: center;
+    font-size: 0.8rem;
+  }
+
+  .wow-vat-banner {
+    flex-direction: column;
+    text-align: center;
+    gap: 8px;
+    padding: 12px 14px;
+    margin-top: 30px;
+    font-size: 0.78rem;
   }
 }

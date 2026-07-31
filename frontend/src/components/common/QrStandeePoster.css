@@ -136,6 +136,17 @@
   box-shadow: 0 6px 20px rgba(229, 25, 55, 0.6);
 }
 
+.qr-btn-gold {
+  background: linear-gradient(135deg, #ffc72c, #e5a800);
+  color: #111111;
+  box-shadow: 0 4px 15px rgba(255, 199, 44, 0.35);
+}
+
+.qr-btn-gold:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 199, 44, 0.55);
+}
+
 .qr-btn-secondary {
   background: rgba(255, 255, 255, 0.1);
   color: #ffffff;

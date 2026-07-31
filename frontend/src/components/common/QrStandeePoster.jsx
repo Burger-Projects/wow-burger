@@ -26,6 +26,40 @@ const QrStandeePoster = ({ defaultUrl }) => {
     window.print();
   };
 
+  const handleDownloadPng = () => {
+    const svgElement = posterRef.current?.querySelector("svg");
+    if (!svgElement) {
+      toast.error("Could not locate QR code element.");
+      return;
+    }
+
+    const svgData = new XMLSerializer().serializeToString(svgElement);
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
+    const img = new Image();
+
+    img.onload = () => {
+      canvas.width = img.width + 60;
+      canvas.height = img.height + 60;
+      ctx.fillStyle = "#ffffff";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(img, 30, 30);
+
+      const pngUrl = canvas.toDataURL("image/png");
+      const downloadLink = document.createElement("a");
+      downloadLink.href = pngUrl;
+      downloadLink.download = tableNo.trim()
+        ? `wow-burger-qr-${tableNo.trim().replace(/\s+/g, "-").toLowerCase()}.png`
+        : "wow-burger-qr-code.png";
+      document.body.appendChild(downloadLink);
+      downloadLink.click();
+      document.body.removeChild(downloadLink);
+      toast.success("QR Code PNG image downloaded!");
+    };
+
+    img.src = "data:image/svg+xml;base64," + btoa(unescape(encodeURIComponent(svgData)));
+  };
+
   return (
     <div className="qr-standee-container">
       {/* Controls Bar (Hidden during print) */}
@@ -78,6 +112,9 @@ const QrStandeePoster = ({ defaultUrl }) => {
         <div className="qr-action-buttons">
           <button type="button" className="qr-btn qr-btn-primary" onClick={handlePrint}>
             <i className="fas fa-print"></i> Print Poster
+          </button>
+          <button type="button" className="qr-btn qr-btn-gold" onClick={handleDownloadPng}>
+            <i className="fas fa-download"></i> Download PNG
           </button>
           <button type="button" className="qr-btn qr-btn-secondary" onClick={handleCopyLink}>
             <i className="fas fa-copy"></i> Copy Link
