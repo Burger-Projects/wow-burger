@@ -5,6 +5,7 @@ import { useAuth } from "../../context/AuthContext";
 import { api, resolveImageUrl } from "../../api/client";
 import LoadingSpinner from "../common/LoadingSpinner";
 import BranchPinMap from "./BranchPinMap";
+import QrStandeePoster from "../common/QrStandeePoster";
 import "./admin.css";
 
 const emptyItemForm = {
@@ -568,6 +569,13 @@ const AdminDashboard = () => {
           onClick={() => setTab("users")}
         >
           Users
+        </button>
+        <button
+          type="button"
+          className={tab === "qr" ? "active" : ""}
+          onClick={() => setTab("qr")}
+        >
+          <i className="fas fa-qrcode"></i> QR Poster
         </button>
       </div>
 
@@ -1176,6 +1184,9 @@ const AdminDashboard = () => {
           </div>
         </div>
       )}
+
+      {/* ─── QR Code Standee Poster Tab ────────────────────────────────────── */}
+      {tab === "qr" && <QrStandeePoster />}
     </div>
   );
 };

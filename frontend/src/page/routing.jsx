@@ -6,7 +6,7 @@ import Footer from "../components/webPages/Footer/footer";
 const Routing = () => {
   const location = useLocation();
   const path = location.pathname.split("/")[1];
-  const hideChrome = ["login", "register", "admin", "menu"].includes(path);
+  const hideChrome = ["login", "register", "admin", "menu", "qr-code"].includes(path);
 
   return (
     <>

@@ -40,7 +40,7 @@ async function seed() {
 
     for (const [name, slug] of categoriesData) {
       await connection.execute(
-        "INSERT INTO categories (name, slug) VALUES (?, ?) ON DUPLICATE KEY UPDATE name = VALUES(name)",
+        "INSERT INTO categories (name, slug) VALUES (?, ?) ON CONFLICT (slug) DO UPDATE SET name = EXCLUDED.name",
         [name, slug]
       );
     }
@@ -251,7 +251,7 @@ async function seed() {
       if (categoryId) {
         await connection.execute(
           `INSERT INTO menu_items (category_id, name, description, price, is_available)
-           VALUES (?, ?, ?, ?, 1)`,
+           VALUES (?, ?, ?, ?, true)`,
           [categoryId, name, description, price],
         );
       }
@@ -266,7 +266,7 @@ async function seed() {
       await connection.execute(
         `INSERT INTO branches
           (name, address, city, phone, email, hours, latitude, longitude, is_primary, is_active, sort_order)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, 1, 1, 0)`,
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, true, true, 0)`,
         [
           "WOW Burger Main Branch",
           "Bole Road, Near Friendship Building",

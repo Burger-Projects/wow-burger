@@ -69,6 +69,9 @@ if (!isMysql) {
         },
       };
     },
+    async end() {
+      await pgPool.end();
+    },
   };
 
   pgPool
