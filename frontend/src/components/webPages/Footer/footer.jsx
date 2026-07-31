@@ -1,4 +1,5 @@
 import React from "react";
+import wowLogo from "../../../Assets/wow-burger-logo.png";
 import "./footer.css";
 
 const Footer = () => {
@@ -16,14 +17,13 @@ const Footer = () => {
           <div className="footer-grid">
             <div className="footer-brand">
               <div className="footer-logo">
-                <span className="footer-logo-mark">BH</span>
+                <img src={wowLogo} alt="WOW Burger Logo" className="footer-logo-img" />
                 <span className="footer-logo-text">
-                  Burger<span>House</span>
+                  WOW <span>BURGER</span>
                 </span>
               </div>
               <p>
-                Bold burgers. Fast flavor. Fresh ingredients and secret sauces
-                in every bite.
+                Hand-crafted smash burgers, signature spicy sauces, and bold flavors hit hard in every single bite.
               </p>
               <div className="footer-socials">
                 <a href="#!" className="footer-social-link" aria-label="Facebook">
@@ -70,23 +70,23 @@ const Footer = () => {
               <h4>Favorites</h4>
               <ul>
                 <li>
-                  <a href="#menu">Classic Beef Burger</a>
+                  <a href="#menu">WOW Smash Special</a>
                 </li>
                 <li>
-                  <a href="#menu">Double Cheese Deluxe</a>
+                  <a href="#menu">Double Golden Deluxe</a>
                 </li>
                 <li>
-                  <a href="#menu">BBQ Bacon Smash</a>
+                  <a href="#menu">Red Hot BBQ Smash</a>
                 </li>
                 <li>
-                  <a href="#menu">Truffle Mushroom</a>
+                  <a href="#menu">Truffle Crisp Burger</a>
                 </li>
               </ul>
             </div>
 
             <div className="footer-newsletter">
               <h4>Stay Hungry</h4>
-              <p>Get drops on specials and new menu items.</p>
+              <p>Get drops on WOW specials and fresh menu items.</p>
               <form
                 className="newsletter-form"
                 onSubmit={(e) => e.preventDefault()}
@@ -100,7 +100,7 @@ const Footer = () => {
           </div>
 
           <div className="footer-bottom">
-            <p>&copy; 2026 Burger House. All rights reserved.</p>
+            <p>&copy; 2026 WOW Burger. All rights reserved.</p>
             <div className="footer-bottom-links">
               <a href="#!">Privacy</a>
               <a href="#!">Terms</a>

@@ -14,15 +14,14 @@ const Home = () => {
 
       <div className="hero-container">
         <div className="hero-content">
-          <p className="hero-brand">Burger House</p>
+          <p className="hero-brand">WOW BURGER</p>
           <h1 className="hero-title">
             Taste The
             <br />
             <span>Bold Bite</span>
           </h1>
           <p className="hero-description">
-            Hand-crafted smash burgers, secret sauces, and flavors that hit hard
-            — built for people who take food seriously.
+            Hand-crafted smash burgers, secret signature sauces, and hot flavors that hit hard — built for true burger lovers.
           </p>
           <div className="hero-buttons">
             <button

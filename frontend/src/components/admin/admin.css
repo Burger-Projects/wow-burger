@@ -58,8 +58,9 @@
 }
 
 .admin-tabs button.active {
-  background: #ffc107;
-  border-color: #ffc107;
+  background: var(--primary-red);
+  border-color: var(--primary-red);
+  color: var(--white);
 }
 
 .admin-grid {

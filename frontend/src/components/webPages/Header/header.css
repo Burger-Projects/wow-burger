@@ -12,9 +12,9 @@
 
 .header.scrolled {
   padding: 12px 0;
-  background: rgba(13, 13, 13, 0.92);
+  background: rgba(26, 26, 26, 0.95);
   backdrop-filter: blur(16px);
-  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.4);
 }
 
 .header-container {
@@ -33,30 +33,47 @@
   cursor: pointer;
 }
 
+.logo-img {
+  height: 52px;
+  width: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 12px rgba(214, 40, 40, 0.4));
+  transition: var(--transition);
+}
+
+.logo:hover .logo-img {
+  transform: scale(1.08) rotate(-2deg);
+}
+
 .logo-mark {
   width: 44px;
   height: 44px;
-  background: var(--yellow);
-  color: var(--ink);
-  font-family: var(--font-display);
-  font-size: 1.15rem;
-  letter-spacing: 0.04em;
+  background: var(--black);
+  border: 2px solid var(--golden-yellow);
+  color: var(--golden-yellow);
   display: grid;
   place-items: center;
-  border-radius: 2px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(214, 40, 40, 0.3);
+  transition: var(--transition);
+}
+
+.logo:hover .logo-mark {
+  transform: scale(1.05) rotate(-3deg);
+  border-color: var(--primary-red);
 }
 
 .logo-name {
   font-family: var(--font-display);
-  font-size: 1.55rem;
-  letter-spacing: 0.04em;
+  font-size: 1.6rem;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
   color: var(--white);
   line-height: 1;
 }
 
 .logo-name span {
-  color: var(--yellow);
+  color: var(--golden-yellow);
 }
 
 .nav-list {
@@ -66,8 +83,8 @@
 }
 
 .nav-list li a {
-  color: rgba(255, 255, 255, 0.78);
-  font-weight: 500;
+  color: rgba(255, 255, 255, 0.88);
+  font-weight: 600;
   font-size: 0.92rem;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -82,13 +99,13 @@
   bottom: -2px;
   left: 0;
   width: 0;
-  height: 2px;
-  background: var(--yellow);
+  height: 2.5px;
+  background: var(--primary-red);
   transition: var(--transition);
 }
 
 .nav-list li a:hover {
-  color: var(--white);
+  color: var(--golden-yellow);
 }
 
 .nav-list li a:hover::after {

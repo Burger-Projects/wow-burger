@@ -60,7 +60,8 @@
 
 /* Inner Form Card using --yellow from index.css */
 .rate-card-inner {
-  background-color: var(--ink-soft);
+  background-color: var(--black);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 20px;
   padding: 45px 55px;
   position: relative;
@@ -70,7 +71,7 @@
 .rate-title {
   font-family: var(--font-display);
   font-size: clamp(2rem, 4vw, 2.8rem);
-  color: var(--yellow);
+  color: var(--golden-yellow);
   margin-bottom: 30px;
   letter-spacing: 0.03em;
   text-transform: uppercase;
@@ -105,15 +106,15 @@
   font-weight: 700;
   letter-spacing: 0.05em;
   text-transform: uppercase;
-  color: var(--off-white);
+  color: var(--white);
 }
 
 /* Inputs & Textarea for Dark Mode Card */
 .rate-input,
 .rate-textarea {
   background-color: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 10px;
   padding: 12px 20px;
   font-family: var(--font-body);
   font-size: 0.95rem;
@@ -123,7 +124,7 @@
 }
 
 .rate-textarea {
-  border-radius: 16px;
+  border-radius: 12px;
   resize: vertical;
 }
 
@@ -135,8 +136,7 @@
 .rate-input:focus,
 .rate-textarea:focus {
   background-color: rgba(255, 255, 255, 0.14);
-  border-color: var(--yellow);
-  border-width: 0.1px;
+  border-color: var(--primary-red);
 }
 
 /* Interactive Star Rating */
@@ -158,7 +158,7 @@
 }
 
 .rate-star-btn.active {
-  color: var(--yellow);
+  color: var(--golden-yellow);
 }
 
 .rate-star-btn:hover {
@@ -174,10 +174,10 @@
 
 .rate-send-btn {
   width: 85%;
-  background-color: var(--yellow);
-  color: var(--ink);
+  background-color: var(--primary-red);
+  color: var(--white);
   border: none;
-  border-radius: 20px;
+  border-radius: 12px;
   padding: 14px 38px;
   font-family: var(--font-body);
   font-size: 0.95rem;
@@ -186,13 +186,13 @@
   text-transform: uppercase;
   cursor: pointer;
   transition: var(--transition);
-  box-shadow: 0 4px 16px rgba(255, 193, 7, 0.25);
+  box-shadow: 0 4px 16px rgba(214, 40, 40, 0.35);
 }
 
 .rate-send-btn:hover:not(:disabled) {
-  background-color: var(--yellow-hot);
+  background-color: var(--dark-red);
   transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(255, 193, 7, 0.35);
+  box-shadow: 0 8px 24px rgba(183, 28, 28, 0.45);
 }
 
 .rate-send-btn:disabled {

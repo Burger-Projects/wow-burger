@@ -166,11 +166,13 @@ const MenuPage = () => {
       <div className="menu-page-hero">
         <div className="menu-page-hero-bg"></div>
         <div className="menu-page-hero-content">
+          <div className="share-the-love-quote">
+            <i className="fas fa-heart"></i> Share the love
+          </div>
           <span className="menu-page-hero-badge">Our Menu</span>
-          <h1>Signature Burgers</h1>
+          <h1>Signature Burgers, Wraps & Pizzas</h1>
           <p>
-            Bold flavors from the kitchen — hand-crafted smash burgers, secret
-            sauces, and flavors that hit hard.
+            Bold flavors from the kitchen — hand-crafted smash burgers, wraps, sandwiches, pizzas & secret sauces.
           </p>
         </div>
       </div>
@@ -200,7 +202,7 @@ const MenuPage = () => {
             <i className="fas fa-search"></i>
             <input
               type="text"
-              placeholder="Search burgers..."
+              placeholder="Search burgers, wraps, pizza..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
@@ -283,7 +285,7 @@ const MenuPage = () => {
                     <div className="menu-page-card-header">
                       <h3>{item.name}</h3>
                       <span className="menu-page-price">
-                        ${Number(item.price).toFixed(2)}
+                        {Number(item.price).toFixed(2)} ETB
                       </span>
                     </div>
                     <p>{item.description || "Chef's special."}</p>
@@ -340,6 +342,12 @@ const MenuPage = () => {
             </div>
           </>
         )}
+
+        {/* Physical Menu Bottom VAT Banner & Wow! Stamp */}
+        <div className="wow-vat-banner">
+          <span>All price are excluding 15% VAT / ሁሉንም ዋጋ 15% ታክስ አይጨምርም</span>
+          <span className="wow-stamp-badge">Wow!</span>
+        </div>
       </div>
     </section>
   );

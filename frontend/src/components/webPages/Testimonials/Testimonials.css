@@ -16,7 +16,7 @@
   border-radius: 10px;
   padding: 28px 24px;
   transition: var(--transition);
-  border-top: 4px solid var(--yellow);
+  border-top: 4px solid var(--primary-red);
   box-shadow: var(--shadow-sm);
   display: flex;
   flex-direction: column;
@@ -36,17 +36,17 @@
 }
 
 .testimonial-stars i.active-star {
-  color: var(--yellow-hot);
+  color: var(--golden-yellow);
   font-size: 0.85rem;
 }
 
 .testimonial-stars i.inactive-star {
-  color: var(--gray-light);
+  color: #dddddd;
   font-size: 0.85rem;
 }
 
 .testimonial-text {
-  color: var(--gray);
+  color: var(--dark-gray);
   font-family: var(--font-body);
   font-size: 0.95rem;
   line-height: 1.7;
@@ -62,16 +62,16 @@
   align-items: center;
   gap: 14px;
   padding-top: 18px;
-  border-top: 1px solid rgba(13, 13, 13, 0.08);
+  border-top: 1px solid rgba(26, 26, 26, 0.08);
 }
 
 .testimonial-avatar {
   width: 46px;
   height: 46px;
   min-width: 46px;
-  background: var(--ink);
-  color: var(--yellow);
-  border-radius: 2px;
+  background: var(--black);
+  color: var(--golden-yellow);
+  border-radius: 6px;
   display: flex;
   align-items: center;
   justify-content: center;

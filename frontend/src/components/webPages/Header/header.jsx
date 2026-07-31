@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../../context/AuthContext";
+import wowLogo from "../../../Assets/wow-burger-logo.png";
 import "./header.css";
 
 const Header = () => {
@@ -24,9 +25,9 @@ const Header = () => {
     <header className={`header ${scrolled ? "scrolled" : ""}`}>
       <div className="header-container">
         <div className="logo" onClick={() => scrollToSection("home")}>
-          <span className="logo-mark">BH</span>
+          <img src={wowLogo} alt="WOW Burger Logo" className="logo-img" />
           <span className="logo-name">
-            Burger<span>House</span>
+            WOW <span>BURGER</span>
           </span>
         </div>
 

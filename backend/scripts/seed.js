@@ -31,60 +31,232 @@ async function seed() {
       console.log(`Admin already exists: ${ADMIN_EMAIL}`);
     }
 
+    // Seed Categories
+    const categoriesData = [
+      ["Burgers", "burgers"],
+      ["Wraps & Sandwiches", "wraps-sandwiches"],
+      ["Pizza", "pizza"],
+    ];
+
+    for (const [name, slug] of categoriesData) {
+      await connection.execute(
+        "INSERT INTO categories (name, slug) VALUES (?, ?) ON DUPLICATE KEY UPDATE name = VALUES(name)",
+        [name, slug]
+      );
+    }
+
     const [categories] = await connection.execute(
       "SELECT id, slug FROM categories",
     );
     const bySlug = Object.fromEntries(categories.map((c) => [c.slug, c.id]));
 
-    const [itemCount] = await connection.execute(
-      "SELECT COUNT(*) AS count FROM menu_items",
-    );
+    // Wipe previous sample items if replacing with official menu
+    await connection.execute("DELETE FROM menu_items");
 
-    if (Number(itemCount[0].count) === 0 && bySlug.classic) {
-      const samples = [
-        [
-          bySlug.classic,
-          "Classic Beef Burger",
-          "Juicy beef patty with lettuce, tomato, onions, and signature sauce",
-          12.99,
-        ],
-        [
-          bySlug.classic,
-          "Double Cheese Deluxe",
-          "Double beef patties with melted cheddar, pickles, and special sauce",
-          16.99,
-        ],
-        [
-          bySlug.premium || bySlug.classic,
-          "BBQ Bacon Smash",
-          "Smoked bacon, caramelized onions, BBQ sauce, and crispy onion rings",
-          18.99,
-        ],
-        [
-          bySlug.spicy || bySlug.classic,
-          "Spicy Jalapeño",
-          "Pepper jack cheese, jalapeños, hot sauce, and cool ranch dressing",
-          14.99,
-        ],
-        [
-          bySlug.veggie || bySlug.classic,
-          "Veggie Garden",
-          "Plant-based patty, fresh greens, roasted peppers, and hummus",
-          13.99,
-        ],
-      ];
+    const wowMenuItems = [
+      // BURGERS
+      [
+        bySlug["burgers"],
+        "Wow Special Burger / ዋው ስፔሻል በርገር",
+        "Double Beef Patty, Double Slice Cheese, Double Slice Beef Mortadella, Fried Egg, Mayonnaise, Tomato, Lettuce",
+        868.70,
+      ],
+      [
+        bySlug["burgers"],
+        "Wow Double Burger / ዋው ድርብ በርገር",
+        "Double Beef Patty, Double Cheese, Mayonnaise, Tomato, Lettuce",
+        781.74,
+      ],
+      [
+        bySlug["burgers"],
+        "Cheese Burger / ቺዝ በርገር",
+        "Beef Patty, Slice Cheese, Mayonnaise, Tomato, Lettuce",
+        607.83,
+      ],
+      [
+        bySlug["burgers"],
+        "Beef Burger / ቢፍ በርገር",
+        "Beef Patty, Mayonnaise, Tomato, Lettuce",
+        520.87,
+      ],
+      [
+        bySlug["burgers"],
+        "Mini Special Burger / ሚኒ ስፔሻል በርገር",
+        "Beef Patty, Slice Cheese, Slice Beef Mortadella, Fried Egg, Mayonnaise, Tomato, Lettuce",
+        694.78,
+      ],
+      [
+        bySlug["burgers"],
+        "Mini Burger / ሚኒ በርገር",
+        "Beef Patty, Mayonnaise, Tomato, Lettuce",
+        477.39,
+      ],
+      [
+        bySlug["burgers"],
+        "Chicken Special Burger / ቺክን ስፔሻል በርገር",
+        "Grilled Marinated Chicken Breast, Slice Cheese, Slice Beef, Fried Egg, Mayonnaise, Tomato, Lettuce",
+        868.70,
+      ],
+      [
+        bySlug["burgers"],
+        "Chicken Burger / ቺክን በርገር",
+        "Grilled Marinated Chicken Breast, Mayonnaise, Tomato, Lettuce",
+        738.26,
+      ],
+      [
+        bySlug["burgers"],
+        "Chicken Burger with Choice of Topping",
+        "Chicken Burger with choice of slice cheese / Slice Beef Mortadella / Fried Egg",
+        781.74,
+      ],
 
-      for (const [categoryId, name, description, price] of samples) {
+      // WRAPS & SANDWICHES
+      [
+        bySlug["wraps-sandwiches"],
+        "Chicken Wrap Big / ያደሮ Wrap Big",
+        "Grilled Chicken, Mozzarella Cheese, Beef Mortadella, Onion, Tomato, chili pepper",
+        999.13,
+      ],
+      [
+        bySlug["wraps-sandwiches"],
+        "Chicken Wrap Medium / ያደሮ Wrap Medium",
+        "Grilled Chicken, Mozzarella Cheese, Beef Mortadella, Onion, Tomato, chili pepper",
+        825.22,
+      ],
+      [
+        bySlug["wraps-sandwiches"],
+        "Fish Wrap / አሳ Wrap",
+        "Grilled Fish, Onion, Tomato, chili pepper",
+        825.22,
+      ],
+      [
+        bySlug["wraps-sandwiches"],
+        "Tuna Wrap Big / ቱና Wrap Big",
+        "Tuna, Onion, Tomato, chili pepper",
+        868.70,
+      ],
+      [
+        bySlug["wraps-sandwiches"],
+        "Tuna Wrap Medium / ቱና Wrap Medium",
+        "Tuna, Onion, Tomato, chili pepper",
+        781.74,
+      ],
+      [
+        bySlug["wraps-sandwiches"],
+        "Vegetable Wrap / የአትክልት Wrap",
+        "Mix of Well Cooked Vegetables",
+        607.83,
+      ],
+      [
+        bySlug["wraps-sandwiches"],
+        "Egg Sandwich / እንቁላል ሳንድዊች",
+        "Fried egg, Mayonnaise, Tomato, Lettuce",
+        390.44,
+      ],
+      [
+        bySlug["wraps-sandwiches"],
+        "Cheese Sandwich / ቺዝ ሳንድዊች",
+        "Slice Cheese, Mayonnaise, Tomato, Lettuce",
+        390.44,
+      ],
+      [
+        bySlug["wraps-sandwiches"],
+        "Ham & Cheese Sandwich / ሃም & ቺዝ ሳንድዊች",
+        "Slice Beef Mortadella, Slice Cheese, Mayonnaise, Tomato, Lettuce, chili pepper",
+        433.91,
+      ],
+      [
+        bySlug["wraps-sandwiches"],
+        "Tuna Sandwich / ቱና ሳንድዊች",
+        "Tuna, Tomato, Onion, Ketchup",
+        738.26,
+      ],
+      [
+        bySlug["wraps-sandwiches"],
+        "Vegetable Sandwich / የአትክልት ሳንድዊች",
+        "Mix of well cooked vegetables",
+        520.87,
+      ],
+      [
+        bySlug["wraps-sandwiches"],
+        "French Fries / ፍሬንች ፍራይስ",
+        "Crispy golden french fries",
+        433.91,
+      ],
+
+      // PIZZA LOVER
+      [
+        bySlug["pizza"],
+        "Wow Special Pizza / ዋው ስፔሻል ፒዛ",
+        "Tomato Sauce, Mozzarella Cheese, Beef, Beef Mortadella, Chicken, Green Pepper, Onion, Egg, Mushroom, Olive, Oregano",
+        938.26,
+      ],
+      [
+        bySlug["pizza"],
+        "Chicken Pizza / ቺክን ፒዛ",
+        "Tomato Sauce, Mozzarella Cheese, Chicken, Onion, Oregano",
+        825.22,
+      ],
+      [
+        bySlug["pizza"],
+        "BBQ Chicken Wing",
+        "Crispy BBQ chicken wings served with Fries and Coleslaw",
+        720.87,
+      ],
+      [
+        bySlug["pizza"],
+        "Margarita Pizza / ማርጋሪታ ፒዛ",
+        "Tomato Sauce, Mozzarella Cheese, Oregano",
+        564.35,
+      ],
+      [
+        bySlug["pizza"],
+        "Meat Lover / Beef Pizza / ሚት ላቨር ፒዛ",
+        "Tomato Sauce, Mozzarella Cheese, Beef, Green Pepper, White Onion, Oregano",
+        781.74,
+      ],
+      [
+        bySlug["pizza"],
+        "Pizzala Pizza / ፒዛላ ፒዛ",
+        "Tomato Sauce, Mozzarella Cheese, Burger Beef, Slice Tomato, Oregano",
+        781.74,
+      ],
+      [
+        bySlug["pizza"],
+        "Chicken Pesto Pizza",
+        "Pesto sauce, Mozzarella Cheese, Chicken, Cherry Tomatoes",
+        781.74,
+      ],
+      [
+        bySlug["pizza"],
+        "Hawaiian Pizza",
+        "Tomato Sauce, Mozzarella Cheese, Mortadella Beef, Pineapple, Red Onion",
+        781.74,
+      ],
+      [
+        bySlug["pizza"],
+        "Tuna Pizza / ቱና ፒዛ",
+        "Tomato Sauce, Mozzarella Cheese, Tuna, Onion",
+        825.22,
+      ],
+      [
+        bySlug["pizza"],
+        "Vegetable Pizza / የአትክልት ፒዛ",
+        "Tomato Sauce, Zucchini, Eggplant, Red Pepper, Fasting Oregano",
+        520.87,
+      ],
+    ];
+
+    for (const [categoryId, name, description, price] of wowMenuItems) {
+      if (categoryId) {
         await connection.execute(
           `INSERT INTO menu_items (category_id, name, description, price, is_available)
            VALUES (?, ?, ?, ?, 1)`,
           [categoryId, name, description, price],
         );
       }
-      console.log(`Seeded ${samples.length} menu items`);
-    } else {
-      console.log("Menu items already present — skipping sample insert");
     }
+    console.log(`Seeded ${wowMenuItems.length} WOW Burger menu items`);
 
     const [branchCount] = await connection.execute(
       "SELECT COUNT(*) AS count FROM branches",
@@ -96,19 +268,17 @@ async function seed() {
           (name, address, city, phone, email, hours, latitude, longitude, is_primary, is_active, sort_order)
          VALUES (?, ?, ?, ?, ?, ?, ?, ?, 1, 1, 0)`,
         [
-          "Burger House Downtown",
-          "123 Burger Avenue, Foodie District",
-          "New York, NY 10001",
-          "+1 (555) 123-4567",
-          "hello@burgerhouse.com",
-          "Mon – Fri: 10:00 AM – 11:00 PM\nSat – Sun: 9:00 AM – 12:00 AM",
-          40.758,
-          -73.9855,
+          "WOW Burger Main Branch",
+          "Bole Road, Near Friendship Building",
+          "Addis Ababa, Ethiopia",
+          "+251 911 123 456",
+          "info@wowburger.et",
+          "Mon – Sun: 8:00 AM – 11:00 PM",
+          9.0105,
+          38.7612,
         ],
       );
       console.log("Seeded sample branch");
-    } else {
-      console.log("Branches already present — skipping sample insert");
     }
 
     await connection.commit();

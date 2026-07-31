@@ -172,9 +172,12 @@ const Service = () => {
     <section id="menu" className="menu-section">
       <div className="container">
         <div className="section-title">
+          <div className="share-the-love-quote">
+            <i className="fas fa-heart"></i> Share the love
+          </div>
           <span className="subtitle">Our Menu</span>
-          <h2>Signature Burgers</h2>
-          <p>Bold flavors from the kitchen — updated live from our menu</p>
+          <h2>Signature Burgers & Menu</h2>
+          <p>Bold flavors from the kitchen — hand-crafted smash burgers, wraps, sandwiches & pizzas</p>
         </div>
 
         <div className="menu-toolbar">
@@ -253,7 +256,7 @@ const Service = () => {
                     <div className="menu-card-header">
                       <h3>{item.name}</h3>
                       <span className="menu-price">
-                        ${Number(item.price).toFixed(2)}
+                        {Number(item.price).toFixed(2)} ETB
                       </span>
                     </div>
                     <p>{item.description || "Chef’s special."}</p>
@@ -301,6 +304,12 @@ const Service = () => {
             })}
           </div>
         )}
+
+        {/* Physical Menu Bottom VAT Banner & Wow! Stamp */}
+        <div className="wow-vat-banner">
+          <span>All price are excluding 15% VAT / ሁሉንም ዋጋ 15% ታክስ አይጨምርም</span>
+          <span className="wow-stamp-badge">Wow!</span>
+        </div>
       </div>
     </section>
   );

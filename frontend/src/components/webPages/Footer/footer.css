@@ -22,16 +22,22 @@
   margin-bottom: 18px;
 }
 
+.footer-logo-img {
+  height: 52px;
+  width: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 12px rgba(214, 40, 40, 0.4));
+}
+
 .footer-logo-mark {
   width: 42px;
   height: 42px;
-  background: var(--yellow);
-  color: var(--ink);
-  font-family: var(--font-display);
-  font-size: 1.05rem;
+  background: var(--black);
+  border: 2px solid var(--golden-yellow);
+  color: var(--golden-yellow);
   display: grid;
   place-items: center;
-  border-radius: 2px;
+  border-radius: 8px;
 }
 
 .footer-logo-text {
@@ -43,11 +49,11 @@
 }
 
 .footer-logo-text span {
-  color: var(--yellow);
+  color: var(--golden-yellow);
 }
 
 .footer-brand p {
-  color: rgba(255, 255, 255, 0.45);
+  color: rgba(255, 255, 255, 0.65);
   font-size: 0.92rem;
   line-height: 1.7;
   margin-bottom: 22px;
@@ -62,19 +68,19 @@
 .footer-social-link {
   width: 40px;
   height: 40px;
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  border-radius: 2px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 6px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: rgba(255, 255, 255, 0.5);
+  color: rgba(255, 255, 255, 0.7);
   transition: var(--transition);
 }
 
 .footer-social-link:hover {
-  background: var(--yellow);
-  border-color: var(--yellow);
-  color: var(--ink);
+  background: var(--primary-red);
+  border-color: var(--primary-red);
+  color: var(--white);
 }
 
 .footer-links h4,
@@ -96,17 +102,17 @@
 }
 
 .footer-links ul li a {
-  color: rgba(255, 255, 255, 0.45);
+  color: rgba(255, 255, 255, 0.65);
   font-size: 0.92rem;
   transition: var(--transition);
 }
 
 .footer-links ul li a:hover {
-  color: var(--yellow);
+  color: var(--golden-yellow);
 }
 
 .footer-newsletter p {
-  color: rgba(255, 255, 255, 0.45);
+  color: rgba(255, 255, 255, 0.65);
   font-size: 0.92rem;
   line-height: 1.6;
   margin-bottom: 16px;
@@ -120,9 +126,9 @@
 .newsletter-form input {
   flex: 1;
   padding: 12px 14px;
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  border-radius: 2px;
-  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.06);
   color: var(--white);
   font-family: var(--font-body);
   font-size: 0.9rem;
@@ -130,11 +136,11 @@
 }
 
 .newsletter-form input:focus {
-  border-color: var(--yellow);
+  border-color: var(--primary-red);
 }
 
 .newsletter-form input::placeholder {
-  color: rgba(255, 255, 255, 0.3);
+  color: rgba(255, 255, 255, 0.4);
 }
 
 .newsletter-form .btn {
@@ -153,7 +159,7 @@
 
 .footer-bottom p,
 .footer-bottom-links a {
-  color: rgba(255, 255, 255, 0.35);
+  color: rgba(255, 255, 255, 0.5);
   font-size: 0.85rem;
 }
 
@@ -163,7 +169,7 @@
 }
 
 .footer-bottom-links a:hover {
-  color: var(--yellow);
+  color: var(--golden-yellow);
 }
 
 @media (max-width: 900px) {

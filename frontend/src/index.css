@@ -1,19 +1,43 @@
 /* ===== BURGIO-INSPIRED GLOBAL STYLES ===== */
 :root {
-  --yellow: #ffc107;
-  --yellow-hot: #ffb300;
-  --yellow-soft: #ffe082;
-  --ink: #0d0d0d;
-  --ink-soft: #1a1a1a;
-  --ink-muted: #2a2a2a;
-  --white: #ffffff;
-  --off-white: #f6f6f4;
-  --gray: #6b6b6b;
-  --gray-light: #bdbdbd;
-  --red-bite: #e53935;
-  --shadow-sm: 0 4px 16px rgba(0, 0, 0, 0.12);
-  --shadow-md: 0 12px 40px rgba(0, 0, 0, 0.18);
-  --shadow-lg: 0 24px 60px rgba(0, 0, 0, 0.28);
+  /* Primary Brand Colors (Fetched from Official WOW Burger Logo) */
+  --primary-red: #DF0529;      /* Brand Red - Main logo, backgrounds, promotions */
+  --golden-yellow: #F9B41A;   /* Brand Yellow - Accents, highlights, offers */
+  --accent-yellow: #F6A21A;   /* Accent Yellow */
+  --black: #231F20;           /* Brand Text / Charcoal Dark */
+  --white: #FFFFFF;           /* Backgrounds, text contrast */
+  --surface: #FFF8EE;         /* Surface - Soft warm cream */
+  --border: #EAEAEA;          /* Border gray */
+
+  /* Secondary & Hover States */
+  --dark-red: #C00422;        /* Buttons, hover states */
+  --orange: #F6A21A;          /* Food highlights */
+  --light-gray: #FFF8EE;      /* Cards and background sections */
+  --dark-gray: #555555;       /* Secondary text */
+
+  /* Semantic aliases */
+  --primary: var(--primary-red);
+  --primary-dark: var(--dark-red);
+  --primary-light: #ff3b59;
+  --secondary: var(--golden-yellow);
+  --secondary-light: #ffcb47;
+  --accent: var(--accent-yellow);
+  --dark: var(--black);
+  --darker: #181516;
+  --light: var(--light-gray);
+  --off-white: var(--surface);
+  --cream: var(--surface);
+  --gold: var(--golden-yellow);
+  --gold-light: #ffd466;
+  --text-dark: var(--black);
+  --text-light: var(--white);
+  --text-muted: var(--dark-gray);
+  --ink: var(--black);
+
+  --shadow-sm: 0 4px 16px rgba(35, 31, 32, 0.12);
+  --shadow-md: 0 12px 40px rgba(35, 31, 32, 0.18);
+  --shadow-lg: 0 24px 60px rgba(223, 5, 41, 0.25);
+  --shadow-glow: 0 0 40px rgba(249, 180, 26, 0.35);
   --radius-sm: 4px;
   --radius-md: 12px;
   --radius-lg: 20px;
@@ -21,28 +45,10 @@
   --font-display: "Anton", sans-serif;
   --font-body: "Roboto", sans-serif;
 
-  /* Legacy aliases used across components */
-  --primary: var(--yellow);
-  --primary-dark: var(--yellow-hot);
-  --primary-light: var(--yellow-soft);
-  --secondary: var(--yellow);
-  --secondary-light: var(--yellow-soft);
-  --accent: var(--ink);
-  --accent-light: var(--ink-soft);
-  --dark: var(--ink);
-  --darker: #050505;
-  --light: var(--off-white);
-  --cream: var(--off-white);
-  --gold: var(--yellow);
-  --gold-light: var(--yellow-soft);
-  --text-dark: var(--ink);
-  --text-light: var(--white);
-  --text-muted: var(--gray);
-  --shadow-glow: 0 0 40px rgba(255, 193, 7, 0.25);
-  --gradient-primary: linear-gradient(135deg, var(--yellow), var(--yellow-hot));
-  --gradient-gold: linear-gradient(135deg, var(--yellow), #ffca28);
-  --gradient-dark: linear-gradient(160deg, var(--ink) 0%, var(--ink-soft) 100%);
-  --gradient-hero: none;
+  --gradient-primary: linear-gradient(135deg, var(--primary-red), var(--dark-red));
+  --gradient-gold: linear-gradient(135deg, var(--golden-yellow), var(--accent-yellow));
+  --gradient-dark: linear-gradient(160deg, var(--black) 0%, #353032 100%);
+  --gradient-hero: linear-gradient(180deg, rgba(35, 31, 32, 0.88) 0%, rgba(223, 5, 41, 0.45) 100%);
   --radius-xl: 999px;
 }
 
@@ -112,9 +118,9 @@ a {
   font-weight: 700;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: var(--yellow-hot);
+  color: var(--primary-red);
   margin-bottom: 12px;
-  background: rgba(255, 193, 7, 0.12);
+  background: rgba(214, 40, 40, 0.12);
   padding: 6px 14px;
   border-radius: 2px;
 }
@@ -125,7 +131,7 @@ a {
   font-weight: 400;
   letter-spacing: 0.02em;
   text-transform: uppercase;
-  color: var(--ink);
+  color: var(--black);
   line-height: 1.05;
 }
 
@@ -134,12 +140,12 @@ a {
   display: block;
   width: 64px;
   height: 4px;
-  background: var(--yellow);
+  background: var(--golden-yellow);
   margin: 16px auto 0;
 }
 
 .section-title p {
-  color: var(--gray);
+  color: var(--dark-gray);
   margin-top: 18px;
   font-size: 1.05rem;
   max-width: 540px;
@@ -169,15 +175,16 @@ a {
 }
 
 .btn-primary {
-  background: var(--yellow);
-  color: var(--ink);
-  box-shadow: 0 8px 24px rgba(255, 193, 7, 0.35);
+  background: var(--primary-red);
+  color: var(--white);
+  box-shadow: 0 8px 24px rgba(214, 40, 40, 0.35);
 }
 
 .btn-primary:hover {
-  background: var(--yellow-hot);
+  background: var(--dark-red);
+  color: var(--white);
   transform: translateY(-3px);
-  box-shadow: 0 12px 32px rgba(255, 193, 7, 0.45);
+  box-shadow: 0 12px 32px rgba(183, 28, 28, 0.45);
 }
 
 .btn-secondary {
@@ -188,14 +195,21 @@ a {
 
 .btn-secondary:hover {
   background: var(--white);
-  color: var(--ink);
+  color: var(--black);
   border-color: var(--white);
   transform: translateY(-3px);
 }
 
 .btn-gold {
-  background: var(--yellow);
-  color: var(--ink);
+  background: var(--golden-yellow);
+  color: var(--black);
+  box-shadow: 0 8px 24px rgba(244, 197, 66, 0.35);
+}
+
+.btn-gold:hover {
+  background: #e5b330;
+  color: var(--black);
+  transform: translateY(-3px);
 }
 
 .btn-lg {

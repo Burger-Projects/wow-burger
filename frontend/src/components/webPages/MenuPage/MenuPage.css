@@ -41,11 +41,11 @@
   font-weight: 700;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: var(--yellow-hot);
+  color: var(--golden-yellow);
   margin-bottom: 12px;
-  background: rgba(255, 193, 7, 0.15);
+  background: rgba(244, 197, 66, 0.18);
   padding: 6px 14px;
-  border-radius: 2px;
+  border-radius: 4px;
 }
 
 .menu-page-hero-content h1 {
@@ -64,12 +64,12 @@
   display: block;
   width: 64px;
   height: 4px;
-  background: var(--yellow);
+  background: var(--primary-red);
   margin: 16px auto 0;
 }
 
 .menu-page-hero-content p {
-  color: rgba(255, 255, 255, 0.65);
+  color: rgba(255, 255, 255, 0.75);
   font-size: 1.05rem;
   line-height: 1.7;
   max-width: 480px;
@@ -109,20 +109,21 @@
   font-size: 0.82rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.65);
+  color: rgba(255, 255, 255, 0.75);
   cursor: pointer;
   transition: var(--transition);
 }
 
 .menu-page-cat-btn:hover {
-  border-color: var(--yellow);
-  color: var(--yellow);
+  border-color: var(--golden-yellow);
+  color: var(--golden-yellow);
 }
 
 .menu-page-cat-btn.active {
-  background: var(--yellow);
-  color: var(--ink);
-  border-color: var(--yellow);
+  background: var(--primary-red);
+  color: var(--white);
+  border-color: var(--primary-red);
+  box-shadow: 0 4px 14px rgba(214, 40, 40, 0.35);
 }
 
 /* ─── Search ───────────────────────────── */
@@ -130,20 +131,20 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  background: var(--ink-soft);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: var(--black);
+  border: 1px solid rgba(255, 255, 255, 0.16);
   padding: 0 14px;
-  border-radius: 2px;
+  border-radius: 4px;
   min-width: 240px;
   transition: var(--transition);
 }
 
 .menu-page-search:focus-within {
-  border-color: var(--yellow);
+  border-color: var(--golden-yellow);
 }
 
 .menu-page-search i {
-  color: rgba(255, 255, 255, 0.3);
+  color: rgba(255, 255, 255, 0.4);
   font-size: 0.9rem;
 }
 
@@ -159,7 +160,7 @@
 }
 
 .menu-page-search input::placeholder {
-  color: rgba(255, 255, 255, 0.3);
+  color: rgba(255, 255, 255, 0.4);
 }
 
 .menu-page-search-clear {
@@ -179,18 +180,18 @@
 /* ─── Hint & Count ─────────────────────── */
 .menu-page-hint {
   text-align: center;
-  color: rgba(255, 255, 255, 0.45);
+  color: rgba(255, 255, 255, 0.55);
   margin-bottom: 28px;
   font-size: 0.92rem;
 }
 
 .menu-page-hint a {
-  color: var(--yellow);
+  color: var(--golden-yellow);
   font-weight: 700;
 }
 
 .menu-page-count {
-  color: rgba(255, 255, 255, 0.35);
+  color: rgba(255, 255, 255, 0.45);
   font-size: 0.85rem;
   margin-bottom: 20px;
   text-align: right;
@@ -226,19 +227,19 @@
 
 /* ─── Card ─────────────────────────────── */
 .menu-page-card {
-  background: var(--ink-soft);
-  border-radius: 2px;
+  background: var(--black);
+  border-radius: 6px;
   overflow: hidden;
   transition: var(--transition);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   display: flex;
   flex-direction: column;
 }
 
 .menu-page-card:hover {
   transform: translateY(-8px);
-  border-color: rgba(255, 193, 7, 0.35);
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+  border-color: var(--golden-yellow);
+  box-shadow: 0 20px 50px rgba(214, 40, 40, 0.25);
 }
 
 .menu-page-card-media {
@@ -263,8 +264,8 @@
   height: 100%;
   display: grid;
   place-items: center;
-  background: var(--ink-muted);
-  color: rgba(255, 255, 255, 0.15);
+  background: #262626;
+  color: rgba(255, 255, 255, 0.25);
   font-size: 3rem;
 }
 
@@ -275,8 +276,8 @@
   width: 40px;
   height: 40px;
   border: none;
-  border-radius: 2px;
-  background: rgba(13, 13, 13, 0.7);
+  border-radius: 4px;
+  background: rgba(26, 26, 26, 0.8);
   color: #fff;
   cursor: pointer;
   transition: var(--transition);
@@ -287,22 +288,22 @@
 
 .menu-page-fav-btn.active,
 .menu-page-fav-btn:hover {
-  background: var(--yellow);
-  color: var(--ink);
+  background: var(--primary-red);
+  color: var(--white);
 }
 
 .menu-page-card-category {
   position: absolute;
   top: 12px;
   left: 12px;
-  background: var(--yellow);
-  color: var(--ink);
+  background: var(--golden-yellow);
+  color: var(--black);
   padding: 4px 10px;
   font-size: 0.68rem;
   font-weight: 800;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  border-radius: 2px;
+  border-radius: 4px;
 }
 
 .menu-page-card-body {
@@ -332,12 +333,12 @@
 .menu-page-price {
   font-family: var(--font-display);
   font-size: 1.25rem;
-  color: var(--yellow);
+  color: var(--golden-yellow);
   white-space: nowrap;
 }
 
 .menu-page-card-body p {
-  color: rgba(255, 255, 255, 0.5);
+  color: rgba(255, 255, 255, 0.65);
   font-size: 0.88rem;
   line-height: 1.6;
   margin-bottom: 16px;
@@ -347,7 +348,7 @@
 .menu-page-card-footer {
   margin-top: auto;
   padding-top: 12px;
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .menu-page-availability {
@@ -355,12 +356,12 @@
   align-items: center;
   gap: 6px;
   font-size: 0.78rem;
-  color: rgba(255, 255, 255, 0.4);
+  color: rgba(255, 255, 255, 0.5);
   letter-spacing: 0.04em;
 }
 
 .menu-page-availability i {
-  color: var(--yellow);
+  color: var(--golden-yellow);
   font-size: 0.72rem;
 }
 
