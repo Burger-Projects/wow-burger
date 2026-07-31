@@ -18,6 +18,7 @@ const allowedOrigins = [
   "http://localhost:5173",
   "http://localhost:5174",
   "https://menu-website-frontend.vercel.app",
+  "https://wow-burger-ui.onrender.com/",
 ].filter(Boolean);
 
 app.use(
